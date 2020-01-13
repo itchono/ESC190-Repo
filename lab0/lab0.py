@@ -81,9 +81,24 @@ class BalancingTree:
 
 
 	def right_rotate(self, z):
-		# implement
-		pass
-		# use left_rotate as a reference
+		# TODO check
+		y = z.left
+		y.parent = z.parent
+
+		if y.parent is None:
+			self.root = y
+		else:
+			if y.parent.right is z:
+				y.parent.right = y
+			elif y.parent.left is z:
+				y.parent.left = y
+		z.left = y.right
+		if z.left is not None:
+			z.left.parent = z
+		y.right = z
+		z.parent = y
+		self.update_height(z)
+		self.update_height(y)
 
 
 	def find_balance_factor(self, node):
