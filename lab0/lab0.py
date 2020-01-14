@@ -28,7 +28,7 @@ class Languages:
 				else:
 					# make new entry and switch to new year.
 					if not activeYear == -1:
-						self.data_by_year[activeYear].superUpdate(self.data_by_year[activeYear].root) # finalize previous one
+						self.data_by_year[activeYear].update_height(self.data_by_year[activeYear].root) # finalize previous one
 
 					activeYear = year
 
@@ -111,6 +111,7 @@ class BalancingTree:
 			
 			# recompute balance factor after normal insertion
 			n.bf = self.find_balance_factor(n)
+			print("old", n.bf)
 
 			if n.bf > 1:
 				self.left_rotate(n)
@@ -118,28 +119,15 @@ class BalancingTree:
 				self.right_rotate(n)
 
 			n.bf = self.find_balance_factor(n) # **Run a second time to get new BF
+			print("new", n.bf)
 
 			n = n.parent # go next up
 
 	def update_height(self, node):
-		h_right = 0
-
-		n = node.right
-		while n is not None:
-			h_right += 1
-			n = n.right
-		
-		h_left = 0
-		
-		n = node.left
-		while n is not None:
-			h_left += 1
-			n = n.left
-		node.height = max(h_left, h_right)
+		node.height = 1 + max(self.height(node.left), self.height(node.right))
 
 	def height(self, node):
 		return node.height if node else -1
-
 
 	def left_rotate(self, z):
 		y = z.right # declare new apex node
@@ -197,21 +185,10 @@ class BalancingTree:
 		'''
 		# compute right subtree height
 
-		h_right = 0
+		self.update_height(node.right)
+		self.update_height(node.left)
 
-		n = node.right
-		while n is not None:
-			h_right += 1
-			n = n.right
-		
-		h_left = 0
-		
-		n = node.left
-		while n is not None:
-			h_left += 1
-			n = n.left
-
-		return h_right - h_left
+		return node.right.height - node.left.height
 
 
 	def is_balanced(self):
@@ -230,6 +207,9 @@ class BalancingTree:
 		return self.in_order(self.root)
 
 	def in_order(self, node):
+		'''
+		Helper for above function
+		'''
 		result = []
 
 		if node is not None:
@@ -238,15 +218,14 @@ class BalancingTree:
 			result += self.in_order(node.right)
 		return result
 
-	def superUpdate(self, node):
+	def heightTraverse(self, node):
 		'''
-		Makes heights and bfs correct for final tree export
+		Perform post-order traversal to find tree subheights # MAYBE TODO FIND BFs
 		'''
 		if node is not None:
-			self.superUpdate(node.left)
+			self.heightTraverse(node.left)
+			self.heightTraverse(node.right)
 			self.update_height(node)
-			node.bf = self.find_balance_factor(node)
-			self.superUpdate(node.right)
 
 
 
