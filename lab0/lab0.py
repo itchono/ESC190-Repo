@@ -27,6 +27,9 @@ class Languages:
 					
 				else:
 					# make new entry and switch to new year.
+					if not activeYear == -1:
+						self.data_by_year[activeYear].superUpdate(self.data_by_year[activeYear].root) # finalize previous one
+
 					activeYear = year
 
 					self.data_by_year[activeYear] = BalancingTree(Node(entry))
@@ -103,27 +106,36 @@ class BalancingTree:
 		'''
 		n = node
 
-		while n != self.root:
+		while n is not None:
 			# while not at root, keep going
-
+			
 			# recompute balance factor after normal insertion
 			n.bf = self.find_balance_factor(n)
-			self.update_height(n)
 
 			if n.bf > 1:
-				# right heavy --> rotate left about this node
 				self.left_rotate(n)
-			elif n.bf < 1:
-				# left heavy --> rotate right about this node
+			elif n.bf < -1:
 				self.right_rotate(n)
 
-			n = n.parent # go next up
-			
+			n.bf = self.find_balance_factor(n) # **Run a second time to get new BF
 
+			n = n.parent # go next up
 
 	def update_height(self, node):
-		node.height = 1 + max(self.height(node.left), self.height(node.right))
+		h_right = 0
 
+		n = node.right
+		while n is not None:
+			h_right += 1
+			n = n.right
+		
+		h_left = 0
+		
+		n = node.left
+		while n is not None:
+			h_left += 1
+			n = n.left
+		node.height = max(h_left, h_right)
 
 	def height(self, node):
 		return node.height if node else -1
@@ -190,16 +202,15 @@ class BalancingTree:
 		n = node.right
 		while n is not None:
 			h_right += 1
-			n = node.right
+			n = n.right
 		
 		h_left = 0
 		
 		n = node.left
 		while n is not None:
 			h_left += 1
-			n = node.left
+			n = n.left
 
-		print(h_right - h_left)
 		return h_right - h_left
 
 
@@ -227,6 +238,15 @@ class BalancingTree:
 			result += self.in_order(node.right)
 		return result
 
+	def superUpdate(self, node):
+		'''
+		Makes heights and bfs correct for final tree export
+		'''
+		if node is not None:
+			self.superUpdate(node.left)
+			self.update_height(node)
+			node.bf = self.find_balance_factor(node)
+			self.superUpdate(node.right)
 
 
 
