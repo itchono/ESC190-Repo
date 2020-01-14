@@ -23,7 +23,7 @@ class Languages:
 				if year == activeYear:
 					# append to entry if current year is already going
 					
-					BalancingTree(self.data_by_year[activeYear]).balanced_insert(Node(entry))
+					self.data_by_year[activeYear].balanced_insert(Node(entry))
 					
 				else:
 					# make new entry and switch to new year.
@@ -65,6 +65,8 @@ class Languages:
 		return result
 
 class BalancingTree:
+	# TODO height stuff
+
 	def __init__(self, root_node):
 		self.root = root_node
 	
@@ -101,11 +103,12 @@ class BalancingTree:
 		'''
 		n = node
 
-		while not n is self.root:
+		while n != self.root:
 			# while not at root, keep going
 
 			# recompute balance factor after normal insertion
 			n.bf = self.find_balance_factor(n)
+			self.update_height(n)
 
 			if n.bf > 1:
 				# right heavy --> rotate left about this node
@@ -113,8 +116,9 @@ class BalancingTree:
 			elif n.bf < 1:
 				# left heavy --> rotate right about this node
 				self.right_rotate(n)
-			
+
 			n = n.parent # go next up
+			
 
 
 	def update_height(self, node):
@@ -195,6 +199,7 @@ class BalancingTree:
 			h_left += 1
 			n = node.left
 
+		print(h_right - h_left)
 		return h_right - h_left
 
 
@@ -221,6 +226,7 @@ class BalancingTree:
 			result.append(node)
 			result += self.in_order(node.right)
 		return result
+
 
 
 
