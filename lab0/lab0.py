@@ -110,7 +110,7 @@ class BalancingTree:
 			# while not at root, keep going
 			
 			# recompute balance factor after normal insertion
-			n.bf = self.find_balance_factor(n)
+			n.bf = self.find_balance_factor(n) # TODO fix
 			print("old", n.bf)
 
 			if n.bf > 1:
@@ -188,6 +188,7 @@ class BalancingTree:
 		self.update_height(node.right)
 		self.update_height(node.left)
 
+		print(node.right.height - node.left.height)
 		return node.right.height - node.left.height
 
 
