@@ -7,6 +7,24 @@ def test_languages(fname):
 	print("Testing tree building")
 	languages = lab0.Languages()
 	data_by_year = languages.build_trees_from_file(data)
+
+	for y in data_by_year:
+		print(y)
+
+		t = data_by_year[y].traversal()
+
+		maxh = 0
+
+		l = []
+
+		for n in t:
+			l.append(n.bf)
+			if n.height > maxh:
+				maxh = n.height
+
+		print("Elements: {}  |  Height: {}\n{}".format(len(t), maxh, l))
+		
+
 	data.close()
 	
 	query = 'English'

@@ -111,12 +111,20 @@ class BalancingTree:
 			# recompute balance factor after normal insertion
 			n.bf = self.find_balance_factor(n)
 
-			if n.bf > 1:
-				self.left_rotate(n)
-			elif n.bf < -1:
-				self.right_rotate(n)
-
-			n.bf = self.find_balance_factor(n) # **Run a second time to get new BF
+			if n.bf == 2:
+				if n.right.bf == 1:
+					# signs match; simple left rotate
+					self.left_rotate(n)
+				elif n.right.bf == -1:
+					# opposing signs; right rotate bottom and then left rotate top
+					self.right_rotate(n.right)
+					self.left_rotate(n)
+			elif n.bf == -2:
+				if n.left.bf == -1:
+					self.right_rotate(n)
+				elif n.left.bf == 1:
+					self.left_rotate(n.left)
+					self.right_rotate(n)
 
 			n = n.parent # go next up
 
@@ -186,7 +194,7 @@ class BalancingTree:
 		'''
 		# compute height of subtrees
 		self.heightTraverse(node)
-		return self.height(node.right) - self.height(node.right)
+		return self.height(node.right) - self.height(node.left)
 
 
 	def is_balanced(self):
