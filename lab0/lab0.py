@@ -61,6 +61,9 @@ class Languages:
 				if n.val.count > threshold:
 				# EXCEEDS ===> > threshold; NOT >=
 					result[k].append(n.val.name)
+			
+			if result[k] == []:
+				del result[k]
 
 		return result
 

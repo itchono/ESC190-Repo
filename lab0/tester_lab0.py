@@ -25,16 +25,18 @@ def test_languages(fname):
 			if n.height > maxh:
 				maxh = n.height
 
-		print("Elements: {}  |  Height: {}\n".format(len(t), maxh))
+		print("Elements: {}  |  Height: {}\n {}".format(len(t), maxh, data_by_year[y].is_balanced()))
 		
 
 	data.close()
 	
 	query = 'English'
 	data_by_name = languages.query_by_name(query)
+	data_by_num = languages.query_by_count(5000000)
 	
 	print("The statistics for English in Canada, by year:")
 	print(data_by_name)
+	print(data_by_num)
 
 	return data_by_year
 
