@@ -68,7 +68,6 @@ class Languages:
 		return result
 
 class BalancingTree:
-	# TODO height stuff
 
 	def __init__(self, root_node):
 		self.root = root_node
@@ -110,8 +109,7 @@ class BalancingTree:
 			# while not at root, keep going
 			
 			# recompute balance factor after normal insertion
-			n.bf = self.find_balance_factor(n) # TODO fix
-			print("old", n.bf)
+			n.bf = self.find_balance_factor(n)
 
 			if n.bf > 1:
 				self.left_rotate(n)
@@ -119,7 +117,6 @@ class BalancingTree:
 				self.right_rotate(n)
 
 			n.bf = self.find_balance_factor(n) # **Run a second time to get new BF
-			print("new", n.bf)
 
 			n = n.parent # go next up
 
@@ -127,7 +124,7 @@ class BalancingTree:
 		node.height = 1 + max(self.height(node.left), self.height(node.right))
 
 	def height(self, node):
-		return node.height if node else -1
+		return node.height if node else -1 #TODO might be 0
 
 	def left_rotate(self, z):
 		y = z.right # declare new apex node
@@ -150,6 +147,8 @@ class BalancingTree:
 		z.parent = y # update link
 		self.update_height(z)
 		self.update_height(y)
+		z.bf = self.find_balance_factor(z)
+		y.bf = self.find_balance_factor(y)
 
 
 	def right_rotate(self, z):
@@ -177,19 +176,17 @@ class BalancingTree:
 		# update heights
 		self.update_height(z)
 		self.update_height(y)
+		z.bf = self.find_balance_factor(z)
+		y.bf = self.find_balance_factor(y)
 
 
 	def find_balance_factor(self, node):
 		'''
 		Height of right subtree - height of left subtree
 		'''
-		# compute right subtree height
-
-		self.update_height(node.right)
-		self.update_height(node.left)
-
-		print(node.right.height - node.left.height)
-		return node.right.height - node.left.height
+		# compute height of subtrees
+		self.heightTraverse(node)
+		return self.height(node.right) - self.height(node.right)
 
 
 	def is_balanced(self):
@@ -198,7 +195,6 @@ class BalancingTree:
 			if n.bf > 1 or n.bf < -1:
 				# VIOLATION
 				return False
-		
 		return True
 
 	def traversal(self):
