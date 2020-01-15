@@ -27,9 +27,6 @@ class Languages:
 					
 				else:
 					# make new entry and switch to new year.
-					if not activeYear == -1:
-						self.data_by_year[activeYear].update_height(self.data_by_year[activeYear].root) # finalize previous one
-
 					activeYear = year
 
 					self.data_by_year[activeYear] = BalancingTree(Node(entry))
@@ -112,19 +109,14 @@ class BalancingTree:
 			n.bf = self.find_balance_factor(n)
 
 			if n.bf == 2:
-				if n.right.bf == 1:
-					# signs match; simple left rotate
-					self.left_rotate(n)
-				elif n.right.bf == -1:
+				if n.right.bf == -1:
 					# opposing signs; right rotate bottom and then left rotate top
 					self.right_rotate(n.right)
-					self.left_rotate(n)
+				self.left_rotate(n)
 			elif n.bf == -2:
-				if n.left.bf == -1:
-					self.right_rotate(n)
-				elif n.left.bf == 1:
+				if n.left.bf == 1:
 					self.left_rotate(n.left)
-					self.right_rotate(n)
+				self.right_rotate(n)
 
 			n = n.parent # go next up
 
