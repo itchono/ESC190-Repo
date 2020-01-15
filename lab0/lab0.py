@@ -124,7 +124,7 @@ class BalancingTree:
 		node.height = 1 + max(self.height(node.left), self.height(node.right))
 
 	def height(self, node):
-		return node.height if node else -1 #TODO might be 0
+		return node.height if node else -1
 
 	def left_rotate(self, z):
 		y = z.right # declare new apex node
@@ -217,12 +217,30 @@ class BalancingTree:
 
 	def heightTraverse(self, node):
 		'''
-		Perform post-order traversal to find tree subheights # MAYBE TODO FIND BFs
+		Perform post-order traversal to find tree subheights
 		'''
 		if node is not None:
 			self.heightTraverse(node.left)
 			self.heightTraverse(node.right)
 			self.update_height(node)
+
+	def print_tree(self):
+		'''
+		Debugger
+		'''
+		queueboi = [self.root]
+		output = ""
+		while queueboi:
+			popboi = queueboi.copy()
+			queueboi.clear()
+			for boi in popboi:
+				output += "{}{}[{}] ".format(boi.val.name[0], boi.height, boi.bf)
+				if boi.left:
+					queueboi += [boi.left]
+				if boi.right:
+					queueboi += [boi.right]
+			output += "\n"
+		return output
 
 
 

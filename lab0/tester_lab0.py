@@ -11,6 +11,9 @@ def test_languages(fname):
 	for y in data_by_year:
 		print(y)
 
+		print(data_by_year[y].print_tree())
+
+
 		t = data_by_year[y].traversal()
 
 		maxh = 0
@@ -22,7 +25,7 @@ def test_languages(fname):
 			if n.height > maxh:
 				maxh = n.height
 
-		print("Elements: {}  |  Height: {}\n{}".format(len(t), maxh, l))
+		print("Elements: {}  |  Height: {}\n".format(len(t), maxh))
 		
 
 	data.close()
