@@ -1,9 +1,12 @@
+# MODIFIED BY MINGDE YIN
+
 from avl_trees_tester import *
 
 def is_bst(root):
     '''
     Given the root of a binary tree, check whether it is a binary search tree
     '''
+    
     return False
 
 def is_k_balanced(root, k):

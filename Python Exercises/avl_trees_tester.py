@@ -48,6 +48,9 @@ def avl_to_string(tree):
     return result
 
 def preorder(root):
+    '''
+    Returns parents first
+    '''
     result = []
     if root:
         result.append(root.data)
@@ -58,11 +61,29 @@ def preorder(root):
 
 def inorder(root):
     # Try implementing
-    return None
+    '''
+    Returns in-order list for BST
+    '''
+    result = []
+    if root: # i.e. if root is not None
+        result += inorder(root.left)
+        result.append(root.data)
+        result += inorder(root.right)
+
+    return result
 
 def postorder(root):
     # Try implementing
-    return None
+    '''
+    Returns Leaves first.
+    '''
+    result = []
+    if root: # i.e. if root is not None
+        result += inorder(root.left)
+        result += inorder(root.right)
+        result.append(root.data)
+
+    return result
 
 def search(root, key):
     while root and not root.data == key:
@@ -73,8 +94,13 @@ def search(root, key):
     return root
 
 def search_recursive(root, key):
-    # Try recursive version
-    return None
+    # Try implementing
+    if root and not root.data == key:
+        if key < root.data:
+            return search(root.left, key)
+        elif key > root.data:
+            return search(root.right, key)
+    return root # if data is equal OR if node not found (None)
 
 def maximum(root):
     while root.right:
@@ -82,19 +108,27 @@ def maximum(root):
     return root
 
 def minimum(root):
-    # Try implementing (similar to maximum)
-    return None
+    while root.left: # while exists
+        root = root.left
+    return root
 
 def predecessor(n):
     if n.left:
         return maximum(n.left)
     while n and n == n.parent.left:
+        # if node exists and this node is the parent node's left child
         n = n.parent
     return n.parent
 
 def successor(n):
     # Try implementing (similar to predecessor)
-    return None
+    if n.right:
+        # if right child exists, find min of that one
+        return minimum(n.right)
+    while n and n == n.parent.right:
+        # keep going up tree until you find largest 
+        n = n.parent
+    return n.parent
 
 def insert(root, n):
     if root == None:
@@ -116,7 +150,24 @@ def insert(root, n):
 
 def insert_iterative(root, n):
     # Try iterative version
-    return None
+    if root == None:
+        root = n
+    else:
+        nd = root
+        while nd.left or nd.right:
+            if n.data < nd.data:
+                nd = nd.left
+            elif n.data > nd.data:
+                nd = nd.right
+    
+        if n.data < nd.data:
+            nd.left = n
+            nd.left.parent = nd
+        elif n.data > nd.data:
+            nd.right = n
+            nd.right.parent = nd        
+
+    return root
 
 def delete(root, n):
     def replace(root, n1, n2):
@@ -167,8 +218,25 @@ def right_rotate(root, n):
     return root
 
 def left_rotate(root, n):
-    # Try implementing (symmetric to right_rotate)
-    return None
+    z = n.right
+    n.right = z.left
+
+    if z.left:
+        z.left.parent = z
+    z.parent = n.parent
+
+    if not n.parent:
+        root = z
+    elif n is n.parent.right:
+        n.parent.right = z
+    else:
+        n.parent.left = z
+    
+    # Update balance factors for relevant nodes
+    n.bf = n.bf + 1 - min(0, z.bf)
+    z.bf = z.bf + 1 + max(0, n.bf)
+    
+    return root
 
 def update_bf_insert(root, n):
     # Update the balance factors and possibly re-balance
