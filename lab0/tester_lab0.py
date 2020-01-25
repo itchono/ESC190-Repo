@@ -42,7 +42,8 @@ def test_languages(fname):
 
 
 if __name__ == "__main__":
-	ca_data_fname = 'data/us_languages.csv'
+	ca_data_fname = 'data/ca_languages.csv'
 	# us_data_fname = ''
 	ca_data_by_year = test_languages(ca_data_fname)
 	
+
