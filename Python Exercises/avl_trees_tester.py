@@ -126,8 +126,9 @@ def successor(n):
         # if right child exists, find min of that one
         return minimum(n.right)
     while n and n == n.parent.right:
-        # keep going up tree until you find largest 
+        # smallest ancestor of node whose left subtree contains n
         n = n.parent
+    # once this stops working, that means we are switching from going less than to going greater ==> return the node's parent
     return n.parent
 
 def insert(root, n):
@@ -286,18 +287,20 @@ if __name__ == '__main__':
     h = AVLTreeNode(10)
     i = AVLTreeNode(19)
 
-    tree = insert(a, b)
-    tree = insert(tree, c)
-    tree = insert(tree, e)
-    tree = insert(tree, d)
-    tree = insert(tree, f)
-    tree = insert(tree, f)
-    tree = insert(tree, g)
-    tree = insert(tree, h)
-    tree = insert(tree, i)
+    tree = avl_insert(a, b)
+    tree = avl_insert(tree, c)
+    tree = avl_insert(tree, e)
+    tree = avl_insert(tree, d)
+    tree = avl_insert(tree, f)
+    tree = avl_insert(tree, f)
+    tree = avl_insert(tree, g)
+    tree = avl_insert(tree, h)
+    tree = avl_insert(tree, i)
     print(tree)
-    tree = right_rotate(tree, a)
+ 
+    # tree = right_rotate(tree, a)
 
     # Test BS Tree Traversals
     print("Testing preorder traversal")
     print(preorder(tree))
+    print(inorder(tree))

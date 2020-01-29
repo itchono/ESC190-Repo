@@ -16,6 +16,8 @@ class MaxHeap:
         '''
         Insert a new element such that the max heap property is satisfied
         After appending the new element, swap with the parent until the max heap property is satisfied
+
+        I.E. BUBBLE UPWARDS
         '''
         self.heap.append(element)
         cur_index = self.size() - 1
@@ -38,11 +40,13 @@ class MaxHeap:
             return None
         
         removed_element = self.heap[0]
-        self.heap[0] = self.heap.pop()
+        self.heap[0] = self.heap.pop() # swap with last element
         last_index = len(self.heap) - 1
         cur_index = 0
         left_index, right_index = 1, 2
         while right_index <= last_index or left_index <= last_index:
+
+            # find maximum child
             if right_index <= last_index:
                 max_child = max(self.heap[left_index], self.heap[right_index])
                 swap_index = left_index if max_child == self.heap[left_index] else right_index
