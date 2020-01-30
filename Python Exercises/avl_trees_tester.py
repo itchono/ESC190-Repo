@@ -18,34 +18,32 @@ def avl_to_string(tree):
     '''
     Prints an AVL tree's keys and balance factors in level order, signifying empty children by null
     '''
-    result = ''
-    q = collections.deque()
-    first = True
-    null_nodes_pending = 0
+    output = ""
 
-    result += '['
-    q.append(tree)
+    # level-order traversal
 
-    while q:
-        node = q.popleft()
-        if node:
-            if first:
-                first = False
-            else:
-                result += ', '
+    n = tree
 
-            while null_nodes_pending:
-                result += 'null, '
-                null_nodes_pending -= 1
+    queue = [n]
 
-            result += '"{}"|{}'.format(node.data, node.bf)
-            q.append(node.left)
-            q.append(node.right)
-        else:
-            null_nodes_pending += 1
+    while queue != []:
 
-    result += ']'
-    return result
+        currentLevel = queue[:]
+        queue = []
+
+        for n in currentLevel:
+            # process all the nodes currently in the tree (current level)
+            if n is not None:
+                output += str(n.data) + "[{}] ".format(n.bf)
+                queue.append(n.left)
+                queue.append(n.right)
+                # add "the next generation"
+
+        output += "\n" # when we deplete the line it means the level is done
+
+        
+    return output
+
 
 def preorder(root):
     '''
@@ -216,6 +214,8 @@ def right_rotate(root, n):
     n.bf = n.bf + 1 - min(0, z.bf)
     z.bf = z.bf + 1 + max(0, n.bf)
 
+    print("RIGHT")
+
     return root
 
 def left_rotate(root, n):
@@ -236,6 +236,8 @@ def left_rotate(root, n):
     # Update balance factors for relevant nodes
     n.bf = n.bf + 1 - min(0, z.bf)
     z.bf = z.bf + 1 + max(0, n.bf)
+
+    print("LEFT")
     
     return root
 
@@ -254,18 +256,14 @@ def update_bf_insert(root, n):
     return root
 
 def rebalance(root, n):
-    if n.bf > 0:
-        if n.right and n.right.bf >= 0:
-            root = left_rotate(root, n)
-        else:
+    if n.bf > 1:
+        if n.right and n.right.bf < 0:
             root = right_rotate(root, n.right)
-            root = left_rotate(root, n)
-    else:
-        if n.left and n.left.bf <= 0:
-            root = right_rotate(root, n)
-        else:
+        root = left_rotate(root, n)
+    elif n.bf < 1:
+        if n.left and n.left.bf > 0:
             root = left_rotate(root, n.left)
-            root = right_rotate(root, n)
+        root = right_rotate(root, n)
 
     return root
 
