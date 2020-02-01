@@ -117,24 +117,4 @@ def find_shortest_path(installation_A, installation_B, graph):
         return(distances[lookup[installation_B]], path)
 
 
-
-if __name__ == "__main__":
-    print(euclidean_distance((-1, -1),(1, 1)))
-    l = get_installations_from_file("test_data.txt")
-
-    for j in l:
-        print(j)
-        '''
-        print(j.position)
-        print(j.indoor)
-        '''
-    
-    M = get_adjacency_mtx(l)
-    print(M)
-
-    G = make_graph(l)
-    print(G)
-
-    print(find_shortest_path("A", "D", make_graph(l)))
-
     

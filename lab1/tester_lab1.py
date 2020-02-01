@@ -1,4 +1,4 @@
-from lab1_solution import *
+from lab1 import *
 from lab1_utilities import *
 
 if __name__ == "__main__":
