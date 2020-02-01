@@ -58,9 +58,65 @@ def make_graph(installations):
 def find_shortest_path(installation_A, installation_B, graph):
     '''
     Djikstra's Algorithm implemented on this
-    
     '''
-    pass
+    # A and B given by names
+
+    lookup = graph.artwork_to_index
+
+    backlook = {v: k for k, v in lookup.items()}
+    
+    num_nodes = len(graph.adjacency_mtx)
+
+    visited = set()
+    unvisited = set(range(num_nodes))
+
+    adj = graph.adjacency_mtx
+    distances = [float("inf") for i in range(num_nodes)] # initialize all distances to infinity
+
+
+    curr = lookup[installation_A] # convert name to index
+    distances[curr]= 0 # set distance to itself as zero
+
+    prev = [-1 for i in range(num_nodes)]
+
+    min_node = -1
+    
+    while unvisited and curr != lookup[installation_B]:
+        visited.add(curr)
+        unvisited.remove(curr) # update presence
+
+        min_dist = float("inf") # identify next nodes
+
+        for v in unvisited:
+            if adj[curr][v] != 0 and distances[curr] + adj[curr][v] < distances[v]:
+                distances[v] = distances[curr] + adj[curr][v] # update shortest paths for all
+            
+        for v in unvisited:
+            if distances[v] < min_dist:
+                min_dist = distances[v]
+                min_node = v # identify min node
+
+        prev[min_node] = curr
+        curr = min_node # select next out of all possible unvisited nodes
+
+
+    # Trace the path
+    path = [installation_B]
+    c = installation_B
+    while prev[lookup[c]] != -1:
+        c = backlook[prev[lookup[c]]]
+        path.append(c)
+        
+
+    path.reverse()
+
+    # output time
+    if prev[lookup[installation_B]] == -1:
+        return(None, []) # fail case return
+    else:
+        return(distances[lookup[installation_B]], path)
+
+
 
 if __name__ == "__main__":
     print(euclidean_distance((-1, -1),(1, 1)))
@@ -76,6 +132,9 @@ if __name__ == "__main__":
     M = get_adjacency_mtx(l)
     print(M)
 
-    print(make_graph(l))
+    G = make_graph(l)
+    print(G)
+
+    print(find_shortest_path("A", "D", make_graph(l)))
 
     
