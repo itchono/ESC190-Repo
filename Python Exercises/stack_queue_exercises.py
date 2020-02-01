@@ -10,6 +10,9 @@ def check_parentheses(text):
     but the strings "[(3, 4])" "[[(1, 2]), 4, 3]]", and "{d: (1, 2)}}"
     Return a boolean signifying whether the parentheses are ordered correct
     '''
+
+
+    # return if stack is empty
     return False
 
 def preorder_iterative(root):
