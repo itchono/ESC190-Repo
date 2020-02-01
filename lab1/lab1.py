@@ -69,49 +69,50 @@ def find_shortest_path(installation_A, installation_B, graph):
 
     visited = set()
     unvisited = set(range(num_nodes))
+    # initialize set of visited and unvisited nodes
 
     adj = graph.adjacency_mtx
     distances = [float("inf") for i in range(num_nodes)] # initialize all distances to infinity
 
-
     curr = lookup[installation_A] # convert name to index
     distances[curr]= 0 # set distance to itself as zero
 
-    prev = [-1 for i in range(num_nodes)]
+    prev = [-1 for i in range(num_nodes)] # set all returns to null
 
-    min_node = -1
+    min_node = -1 # pointer for next node
     
-    while unvisited and curr != lookup[installation_B]:
+    while unvisited and curr != lookup[installation_B] and curr in unvisited:
         visited.add(curr)
         unvisited.remove(curr) # update presence
-
-        min_dist = float("inf") # identify next nodes
 
         for v in unvisited:
             if adj[curr][v] != 0 and distances[curr] + adj[curr][v] < distances[v]:
                 distances[v] = distances[curr] + adj[curr][v] # update shortest paths for all
-            
+                prev[v] = curr # map the breadcrumb trail to the shortest
+                
+        min_dist = float("inf") # reset min dist
+
         for v in unvisited:
             if distances[v] < min_dist:
                 min_dist = distances[v]
-                min_node = v # identify min node
-
-        prev[min_node] = curr
+                min_node = v # identify min node, to be used next
+        
         curr = min_node # select next out of all possible unvisited nodes
 
-
     # Trace the path
-    path = [installation_B]
-    c = installation_B
-    while prev[lookup[c]] != -1:
-        c = backlook[prev[lookup[c]]]
+    c = lookup[installation_B]
+    path = [c]
+    while prev[c] != -1:
+        c = prev[c]
         path.append(c)
-        
-
+    # puts path in backwards, so we must reverse it
     path.reverse()
+
+    path = [backlook[i] for i in path] # convert to names
 
     # output time
     if prev[lookup[installation_B]] == -1:
+        # in this case there was no path to this node
         return(None, []) # fail case return
     else:
         return(distances[lookup[installation_B]], path)
