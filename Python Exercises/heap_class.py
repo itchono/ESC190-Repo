@@ -27,7 +27,7 @@ class MaxHeap:
                 self.heap[parent_index], self.heap[cur_index] = self.heap[cur_index], self.heap[parent_index]
                 cur_index = parent_index
             else:
-                return
+                break
 
     def dequeue(self):
         '''
@@ -66,8 +66,37 @@ class MaxHeap:
         '''
         Change the priority of element to new_priority
         '''
-        # Try implementing
-        pass
+        i = self.heap.index(element)
+        self.heap[i] = new_priority
+
+        cLeft = 2*i + 1
+        cRight = 2*i + 2
+
+        last = len(self.heap) - 1
+
+        parent = (i-1)//2
+
+        if self.heap[i] > self.heap[parent]:
+            while i > 0 and self.heap[i] > self.heap[parent]:
+                self.heap[i], self.heap[parent] = self.heap[parent], self.heap[i]
+                i = parent
+                parent = (i-1)//2
+        
+        elif self.heap[i] < self.heap[cLeft] or self.heap[i] < self.heap[cRight]:
+            while cLeft <= last or cRight <= last:
+                # find maximum child
+                if cRight <= last:
+                    swap_index = cLeft if self.heap[cLeft] > self.heap[cRight] else cRight
+                else:
+                    swap_index = cLeft
+                if self.heap[i] < self.heap[swap_index]:
+                    self.heap[i], self.heap[swap_index] = self.heap[swap_index], self.heap[i]
+                    i = swap_index
+                    cLeft = 2*i + 1
+                    cRight = 2*i + 2
+                else:
+                    break
+
 
     def display(self):
         '''
@@ -143,6 +172,10 @@ if __name__ == '__main__':
 
     print('')
 
+    print("Change Prio test")
+    max_heap.change_priority(6, 0)
+    max_heap.display()
+
     # Remove from the heap
     print('Testing removing from our max heap')
     dequeued_element = max_heap.dequeue()
@@ -152,3 +185,5 @@ if __name__ == '__main__':
     dequeued_element = max_heap.dequeue()
     print('Dequeued element is {}'.format(dequeued_element))
     max_heap.display()
+
+    

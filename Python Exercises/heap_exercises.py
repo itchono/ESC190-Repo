@@ -1,13 +1,22 @@
-def heap_sort(heap_arr):
+from heap_class import MaxHeap
+
+def heap_sort(heap_arr:MaxHeap):
     '''
     Given a heap implemented as an array, return a sorted list by using the heap sort algorithm
     '''
-    return []
+    out = []
+
+    while heap_arr.size() > 0:
+        out.append(heap_arr.dequeue())
+
+    return out[-1::-1]
 
 def heap_sort_in_place(heap_arr):
     '''
     Given a heap represented as an array, sort the array in place using the heap sort algorithm
     '''
+    
+
     pass
 
 def heapify(arr):
