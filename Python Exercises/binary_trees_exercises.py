@@ -120,6 +120,7 @@ class AVL_Modified:
     balance factors up to an arbitrary value of k
     '''
     pass
+    # see main
 
 
 
@@ -128,17 +129,20 @@ if __name__ == '__main__':
 
     nums = []
     
-    MAX = 6
+    MAX = 30
+
 
     for i in range(0, MAX):
         nums.append(random.randint(0, 100))
+
+    print(nums)
 
     rt = AVLTreeNode(nums[0])
 
     tree = avl_insert(rt, AVLTreeNode(nums[1]))
 
     for i in range(2, MAX):
-        avl_insert(rt, AVLTreeNode(nums[i]))
+        tree = avl_insert(rt, AVLTreeNode(nums[i]))
 
     print(tree)
  

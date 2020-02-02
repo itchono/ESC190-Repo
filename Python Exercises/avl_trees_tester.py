@@ -130,7 +130,11 @@ def successor(n):
     return n.parent
 
 def insert(root, n):
+    '''
+    IMPORTANT SHIT
+    '''
     if root == None:
+        # empty space == put it in
         root = n
     elif n.data < root.data:
         root.left = insert(root.left, n)
@@ -149,26 +153,28 @@ def insert(root, n):
 
 def insert_iterative(root, n):
     # Try iterative version
-    if root == None:
-        root = n
-    else:
-        nd = root
-        while nd.left or nd.right:
-            if n.data < nd.data:
-                nd = nd.left
-            elif n.data > nd.data:
-                nd = nd.right
-    
-        if n.data < nd.data:
-            nd.left = n
-            nd.left.parent = nd
-        elif n.data > nd.data:
-            nd.right = n
-            nd.right.parent = nd        
+    if root:
+        node = root
 
-    return root
+        while node.left or node.right:
+            if n.data < node.data and node.left:
+                node.right.parent = node
+                node = node.left
+            elif n.data > node.data and node.right:
+                node.left.parent = node
+                node = node.right
+        
+        if n.data < node.data:
+                node.right = n
+        elif n.data > node.data:
+                node.left = n
+        n.parent = node
+
+    else:
+        root = n      
 
 def delete(root, n):
+
     def replace(root, n1, n2):
         if not n1.parent:
             root = n2
@@ -196,17 +202,19 @@ def delete(root, n):
 
 def right_rotate(root, n):
     z = n.left
-    n.left = z.right
-    if z.right:
-        z.right.parent = z
+    
     z.parent = n.parent
-
     if not n.parent:
         root = z
     elif n is n.parent.left:
         n.parent.left = z
     else:
         n.parent.right = z
+
+    n.left = z.right
+    if n.left:
+        n.left.parent = n
+    
     z.right = n
     n.parent = z
 
@@ -220,18 +228,21 @@ def right_rotate(root, n):
 
 def left_rotate(root, n):
     z = n.right
-    n.right = z.left
 
-    if z.left:
-        z.left.parent = z
     z.parent = n.parent
-
     if not n.parent:
         root = z
     elif n is n.parent.right:
         n.parent.right = z
     else:
         n.parent.left = z
+    
+    n.right = z.left
+    if n.right:
+        n.right.parent = n
+    
+    z.left = n
+    n.parent = z
     
     # Update balance factors for relevant nodes
     n.bf = n.bf + 1 - min(0, z.bf)
@@ -241,9 +252,9 @@ def left_rotate(root, n):
     
     return root
 
-def update_bf_insert(root, n):
+def update_bf_insert(root, n, k = 1):
     # Update the balance factors and possibly re-balance
-    if n.bf < -1 or n.bf > 1:
+    if n.bf < -k or n.bf > k:
         root = rebalance(root, n)
     else:
         if n.parent:
@@ -255,15 +266,20 @@ def update_bf_insert(root, n):
                 root = update_bf_insert(root, n.parent)
     return root
 
+
 def rebalance(root, n):
-    if n.bf > 1:
-        if n.right and n.right.bf < 0:
+    if n.bf > 0:
+        if n.right and n.right.bf >= 0:
+            root = left_rotate(root, n)
+        elif n.right:
             root = right_rotate(root, n.right)
-        root = left_rotate(root, n)
-    elif n.bf < 1:
-        if n.left and n.left.bf > 0:
+            root = left_rotate(root, n)
+    else:
+        if n.left and n.left.bf <= 0:
+            root = right_rotate(root, n)
+        elif n.left:
             root = left_rotate(root, n.left)
-        root = right_rotate(root, n)
+            root = right_rotate(root, n)
 
     return root
 
