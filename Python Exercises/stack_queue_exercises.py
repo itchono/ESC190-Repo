@@ -122,7 +122,28 @@ def postfix_evaluate(text):
     Given a string of digits and operations (+, -, *, /) in postfix order, calculate the result
     For example, the expression '12*6+' is equivalent to (1*2) + 6 = 8
     '''
-    return 0
+
+    stk = StackArray()
+
+    total = 0
+
+    for c in text:
+        if c in {'+', '-', '*', '/'}:
+            total = stk.pop()
+
+            while stk.size() > 0:
+                if c == '+':
+                    total += stk.pop()
+                elif c == '-':
+                    total -= stk.pop()
+                elif c == "*":
+                    total *= stk.pop()
+
+            stk.push(total)
+        else:
+            stk.push(int(c))
+
+    return total
 
 class StackWithMin(StackArray):
     def __init__(self):
@@ -253,18 +274,24 @@ class QueueUsingStacks:
         self.activeStack = 0
 
     def enqueue(self, n):
+    
+        while self.stacks[self.activeStack].size() > 0:
+            self.stacks[1-self.activeStack].push(self.stacks[self.activeStack].pop())
+
+        self.activeStack = 1-self.activeStack
         self.stacks[self.activeStack].push(n)
 
         while self.stacks[self.activeStack].size() > 0:
             self.stacks[1-self.activeStack].push(self.stacks[self.activeStack].pop())
-        
         self.activeStack = 1-self.activeStack
-
+        
     def dequeue(self, n):
         return self.stacks[self.activeStack].pop()
-    
+        
     # like a deck of cards
 
 if __name__ == "__main__":
     print(check_parentheses("{d: [5, 3, 2], e: (1, (2, 2))}"))
+    print(reverse_string("Apple"))
+    print(postfix_evaluate("12*6+"))
     
