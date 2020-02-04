@@ -24,7 +24,21 @@ def heapify(arr):
     Given a list arr, return a list in max heap order in O(n) time (i.e. level-order of a max heap)
     For example, the list [1,2,3,4,5] would return [5,4,3,1,2]
     '''
-    return []
+    last = len(arr) - 1
+
+    for i in range(len(arr)-1, -1, -1):
+        while i < last:
+
+            left = 2*i + 1
+            right = 2*i + 2
+            
+            maxChld = right if right <= last and arr[right] > arr[left] else (left if left <= last else last)
+
+            if arr[i] < arr[maxChld]:
+                arr[i], arr[maxChld] = arr[maxChld], arr[i]
+            i = maxChld
+
+    return arr
 
 def merge_sorted_lists(sorted_lists):
     '''
@@ -39,3 +53,6 @@ def is_heap(arr):
     Given a list arr, check whether it represents a valid min heap
     '''
     return False
+
+if __name__ == "__main__":
+    print(heapify([1,2,3,4,5]))
