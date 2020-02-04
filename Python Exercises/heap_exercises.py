@@ -55,4 +55,4 @@ def is_heap(arr):
     return False
 
 if __name__ == "__main__":
-    print(heapify([1,2,3,4,5]))
+    print(heapify([1,2,3,4,5, 6, 7, 8]))
