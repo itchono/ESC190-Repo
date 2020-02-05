@@ -221,8 +221,8 @@ def right_rotate(root, n):
     n.parent = z
 
     # Update balance factors for relevant nodes
-    n.bf += 1 - min(0, z.bf)
-    z.bf += 1 + max(0, n.bf)
+    n.bf = 1 - min(0, z.bf)
+    z.bf = 1 + max(0, n.bf)
 
     print("RIGHT")
 
@@ -247,8 +247,8 @@ def left_rotate(root, n):
     n.parent = z
     
     # Update balance factors for relevant nodes
-    n.bf += 1 + max(0, z.bf)
-    z.bf += 1 - min(0, n.bf)
+    n.bf = 1 + max(0, z.bf)
+    z.bf = 1 - min(0, n.bf)
     
     return root
 
