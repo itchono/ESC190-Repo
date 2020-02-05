@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
     nums = []
     
-    MAX = 30
+    MAX = 10
 
 
     for i in range(0, MAX):
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     tree = avl_insert(rt, AVLTreeNode(nums[1]))
 
     for i in range(2, MAX):
-        tree = avl_insert(rt, AVLTreeNode(nums[i]))
+        tree = avl_insert(tree, AVLTreeNode(nums[i]))
 
     print(tree)
  
