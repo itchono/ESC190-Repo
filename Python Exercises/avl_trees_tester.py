@@ -158,20 +158,22 @@ def insert_iterative(root, n):
 
         while node.left or node.right:
             if n.data < node.data and node.left:
-                node.right.parent = node
                 node = node.left
             elif n.data > node.data and node.right:
-                node.left.parent = node
                 node = node.right
+            else:
+                break
         
         if n.data < node.data:
-                node.right = n
-        elif n.data > node.data:
                 node.left = n
+        elif n.data > node.data:
+                node.right = n
         n.parent = node
 
     else:
-        root = n      
+        root = n 
+
+    return root     
 
 def delete(root, n):
 
@@ -219,8 +221,8 @@ def right_rotate(root, n):
     n.parent = z
 
     # Update balance factors for relevant nodes
-    n.bf = n.bf + 1 - min(0, z.bf)
-    z.bf = z.bf + 1 + max(0, n.bf)
+    n.bf = 1 - min(0, z.bf)
+    z.bf = 1 + max(0, n.bf)
 
     print("RIGHT")
 
@@ -245,10 +247,8 @@ def left_rotate(root, n):
     n.parent = z
     
     # Update balance factors for relevant nodes
-    n.bf = n.bf + 1 - min(0, z.bf)
-    z.bf = z.bf + 1 + max(0, n.bf)
-
-    print("LEFT")
+    n.bf = 1 + max(0, z.bf)
+    z.bf = 1 - min(0, n.bf)
     
     return root
 

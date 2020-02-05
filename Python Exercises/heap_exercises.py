@@ -26,7 +26,7 @@ def heapify(arr):
     '''
     last = len(arr) - 1
 
-    for i in range(len(arr)-1, -1, -1):
+    for i in range((len(arr)-1)//2, -1, -1):
         while i < last:
 
             left = 2*i + 1

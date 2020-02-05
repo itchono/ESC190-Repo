@@ -84,7 +84,7 @@ def inorder_iterative(root):
 
     n = root
 
-    out = []
+    stk = StackArray()
 
     while callStack.size() > 0:
         while n:
@@ -94,10 +94,10 @@ def inorder_iterative(root):
 
         i = callStack.pop()
         # push node to output
-        out.append(i)
+        stk.push(i)
 
         n = i.right # go to right child (could be None, in which case we just pop the parent node)
-    return out
+    return stk.stack[-1::-1]
 
 
 def reverse_string(text):

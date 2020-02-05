@@ -60,6 +60,110 @@ class Graph:
 
         return list(reversed(s))
 
+    def DFS_me(self, start, end):
+        stk = [self.values_to_indices[start]]
+        prev = [-1] * len(self.adjacency_mtx)
+
+        visited = set()
+
+        n = self.values_to_indices[start]
+
+        while n != end and stk:
+            n = stk.pop(0)
+            visited.add(n)
+
+            for i in range(len(self.adjacency_mtx)):
+                if self.adjacency_mtx[n][i] != 0 and not i in visited:
+                    # add neighbors to seach stack
+                    stk.append(i)
+
+                    if prev[i] == -1:
+                        prev[i] = n
+
+
+        j = self.values_to_indices[end]
+        path = [end] if prev[j] != -1 else []
+    
+        while prev[j] != -1:
+            path.append(self.values[prev[j]])
+            j = prev[j]
+
+        return path[-1::-1]
+
+    def Djikstra(self, start, end):
+        unvisited = set(range(len(self.adjacency_mtx)))
+        visited = set()
+
+        prev = [-1] * len(self.adjacency_mtx)
+        distances = [float("inf")] * len(self.adjacency_mtx)        
+
+        n = self.values_to_indices[start]
+
+        distances[n] = 0
+
+        min_node = -1
+
+        while unvisited and n != end:
+
+            unvisited.remove(n)
+            visited.add(n)
+
+            min_dist = float("inf")
+
+            for v in unvisited:
+                if self.adjacency_mtx[n][v] != 0:
+                    if distances[n] + self.adjacency_mtx[n][v] < distances[v]:
+                        distances[v] = distances[n] + self.adjacency_mtx[n][v]
+                        prev[v] = n
+
+            for v in unvisited:
+                if self.adjacency_mtx[n][v] != 0 and distances[v] < min_dist:
+                    min_dist = distances[v]
+                    min_node = v
+            n = min_node
+
+        j = self.values_to_indices[end]
+        path = [end] if prev[j] != -1 else []
+    
+        while prev[j] != -1:
+            path.append(self.values[prev[j]])
+            j = prev[j]
+
+        return path[-1::-1]
+
+
+    def BFS(self, start, end):
+        stk = [self.values_to_indices[start]]
+        prev = [-1] * len(self.adjacency_mtx)
+
+        visited = set()
+
+        n = self.values_to_indices[start]
+
+        while n != end and stk:
+            n = stk.pop()
+            visited.add(n)
+
+            for i in range(len(self.adjacency_mtx)):
+                if self.adjacency_mtx[n][i] != 0 and not i in visited:
+                    # add neighbors to seach stack
+                    stk.append(i)
+
+                    if prev[i] == -1:
+                        prev[i] = n
+
+
+        j = self.values_to_indices[end]
+        path = [end] if prev[j] != -1 else []
+    
+        while prev[j] != -1:
+            path.append(self.values[prev[j]])
+            j = prev[j]
+
+        return path[-1::-1]
+
+
+
 if __name__ == "__main__":
     vals = ['A', 'B', 'C', 'D']
     edges = [[0, 1, 0, 0], \
@@ -92,7 +196,7 @@ if __name__ == "__main__":
     
     graph2 = Graph(vals2, edges2)
     print('---From A to E---')
-    path = graph2.DFS('A', 'E')
+    path = graph2.DFS_me('A', 'E')
     print("Path is:", path, "\n")
 
 
@@ -108,5 +212,5 @@ if __name__ == "__main__":
     
     graph3 = Graph(vals3, edges3)
     print('---From A to E---')
-    path = graph3.DFS('A', 'E')
+    path = graph3.DFS_me('A', 'E')
     print("Path is:", path, "\n")
