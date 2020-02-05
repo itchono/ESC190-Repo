@@ -26,7 +26,7 @@ def heapify(arr):
     '''
     last = len(arr) - 1
 
-    for i in range(len(arr)-1, -1, -1):
+    for i in range((len(arr)-1)//2, -1, -1):
         while i < last:
 
             left = 2*i + 1
@@ -55,4 +55,4 @@ def is_heap(arr):
     return False
 
 if __name__ == "__main__":
-    print(heapify([1,2,3,4,5]))
+    print(heapify([1,2,3,4,5, 6, 7, 8]))
