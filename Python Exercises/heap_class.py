@@ -40,7 +40,11 @@ class MaxHeap:
             return None
         
         removed_element = self.heap[0]
-        self.heap[0] = self.heap.pop() # swap with last element
+        
+        if self.heap:
+            self.heap[0] = self.heap[-1]
+            self.heap.pop()
+         # swap with last element
         last_index = len(self.heap) - 1
         cur_index = 0
         left_index, right_index = 1, 2

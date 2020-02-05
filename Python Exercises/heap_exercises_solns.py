@@ -6,7 +6,7 @@ def heap_sort(heap_arr):
     '''
     result, max_heap = [], MaxHeap()
     max_heap.heap = heap_arr
-    while heap_arr:
+    while max_heap.size() > 0:
         result.insert(0, max_heap.dequeue())
     return result
 

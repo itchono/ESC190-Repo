@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
     nums = []
     
-    MAX = 10
+    MAX = 20
 
 
     for i in range(0, MAX):
