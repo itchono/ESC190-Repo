@@ -58,15 +58,17 @@ if __name__ == "__main__":
 
     installations = get_installations_from_file('public_artwork_data.txt')
     #installations = get_installations_from_file('test_data.txt')
-    #graph = make_graph(installations)
+    graph = make_graph(installations)
 
+    '''
     installation_A = "3"
     installation_B = "4"
-
     '''
+
+
     installation_A = 'GALAXY'
     installation_B = 'MIRAGE'
-    '''
+
 
     '''
     installation_A = 'A'
