@@ -81,7 +81,7 @@ def find_shortest_path(installation_A, installation_B, graph):
 
     min_node = -1 # pointer for next node
     
-    while unvisited and curr != lookup[installation_B] and curr in unvisited:
+    while unvisited and curr in unvisited:
         visited.add(curr)
         unvisited.remove(curr) # update presence
 
