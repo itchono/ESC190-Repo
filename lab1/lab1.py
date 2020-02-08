@@ -116,6 +116,3 @@ def find_shortest_path(installation_A, installation_B, graph):
         return(None, []) # fail case return
     else:
         return(distances[lookup[installation_B]], path)
-
-
-    
