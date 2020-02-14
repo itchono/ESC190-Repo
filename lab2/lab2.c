@@ -2,7 +2,7 @@
 
 void print_tree(float arr[], int n) {
     // breadth first traversal
-    int *queue = calloc(n, sizeof(float)); // dynamically sized queue
+    int *queue = calloc(n, sizeof(int)); // dynamically sized queue
     // queue indices of array
 
     int numRows = 0;
@@ -34,12 +34,14 @@ void print_tree(float arr[], int n) {
             queueStart ++; // dequeue all the nodes here.
             queueSize --;
 
-            if ((int)get_left_value(arr, n, i) != -1) {
+            if (get_left_value(arr, n, i) != -1) {
+                printf("leftOK\n");
                 queue[queueEnd] = 2*i+1;
                 queueEnd ++; // enqueue
                 queueSize ++;
             }
-            if ((int)get_right_value(arr, n, i) != -1) {
+            if (get_right_value(arr, n, i) != -1) {
+                printf("rightOK\n");
                 queue[queueEnd] = 2*i+2;
                 queueEnd ++; // enqueue
                 queueSize ++;
@@ -48,8 +50,8 @@ void print_tree(float arr[], int n) {
 
         for (int x = 0; x <= levelptr; x++) {
             printf("%d", level[x]);
-            printf("\n");
         }
+        printf("\n");
 
         
     }
