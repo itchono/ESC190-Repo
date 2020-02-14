@@ -1,0 +1,3 @@
+C:/Users/mdsup/Documents/GitHub/ESC190-Repo/THATS IN C/cmake-build-debug/CMakeFiles/THATS_IN_C.dir
+C:/Users/mdsup/Documents/GitHub/ESC190-Repo/THATS IN C/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/mdsup/Documents/GitHub/ESC190-Repo/THATS IN C/cmake-build-debug/CMakeFiles/rebuild_cache.dir

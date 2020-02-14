@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/mdsup/Documents/GitHub/ESC190-Repo/THATS IN C/library.c
+library.h
+C:/Users/mdsup/Documents/GitHub/ESC190-Repo/THATS IN C/library.h
+stdio.h
+-
+
+C:/Users/mdsup/Documents/GitHub/ESC190-Repo/THATS IN C/library.h
+
