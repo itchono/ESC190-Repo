@@ -81,11 +81,11 @@ void print_tree(float arr[], int n) {
 
 
         while(2*j + 1 <= (n-1) && j >= 0) {
-          // TODO
-          numSpaces += ((int) (log10(arr[j]))+1)/2; // get the number of spaces the character takes up, divided by its impact to the row
+          numSpaces += ((int) (log10(arr[j]))+1); // get the number of spaces the character takes up
 
           j = 2*j + 1;
         }
+        numSpaces --; // round down for conservation
 
         for (int y = 0; y < numSpaces; y++) {
           // print the actual spaces
@@ -103,11 +103,15 @@ void print_tree(float arr[], int n) {
               float L = get_left_value(arr, n, level[x]);
               float R = get_right_value(arr, n, level[x]);
 
+              // complex space determination
               if (L != -1) {
-                numSpaces += log10(L);
+                numSpaces += log10(L)+1;
               }
-              if (R != -1) {
-                numSpaces += log10(R);
+              else if (R != -1) {
+                numSpaces += log10(R)+1;
+              }
+              else if (L!= -1 && R != -1) {
+                numSpaces += (log10(L)+1 + log10(R)+1)/2;
               }
 
               for (int y = 0; y < numSpaces; y++) {

@@ -5,6 +5,9 @@
  * debugging process! Remember that changes you make to this file will not be 
  * marked. */
 int main () {
+    float arr[7] = {90,8,7,6,5,4,3,2};
+    //float arr[7] = {40, 20, 17, 16, 13, 15, 11};
+
     test_get_parent_value();
     test_get_left_value();
     test_get_right_value();
@@ -12,4 +15,15 @@ int main () {
     test_heapify();
     test_heapsort();
     test_find_most_common_element();
+
+    print_tree(arr, 7);
+
+
+    /*
+    test_heapify();
+    test_heapsort();
+    test_find_most_common_element();
+    */
+    return 0;
 }
+
