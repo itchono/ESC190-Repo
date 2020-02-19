@@ -1,9 +1,11 @@
 #include "lab2.h"
 #include <math.h>
+#include <stdlib.h>
 
 void heapifyHelper(float arr[], int n, int i);
 
 void print_tree(float arr[], int n) {
+    // PRINT TREE !!!!!
     // breadth first traversal
     int *queue = calloc(n, sizeof(int)); // dynamically sized queue
     // queue indices of array
@@ -76,16 +78,118 @@ void print_tree(float arr[], int n) {
 
         int numSpaces = exp2(numRows-rowNumber+1)-2; // baseline spaces assuming NO width of members. so, we must add those on.
 
-        // do a left-traversal to check spacing
-        int j = level[0]; // pointer for this traversal
+        int bonusSpcL = 0;
+        int bonusSpcR = 0;
 
+        // HERE BE DRAGONS
 
-        while(2*j + 1 <= (n-1) && j >= 0) {
-          numSpaces += ((int) (log10(arr[j]))+1); // get the number of spaces the character takes up
+        // Determine left and right spacings, averaging if needed
 
-          j = 2*j + 1;
+        if (get_left_value(arr, n, level[0])!= -1) {
+          // do a Level order traversal on the left for spacing
+          int *q = calloc(n, sizeof(int)); // queue
+
+          q[0] = 2*level[0]+1; // pointer for this traversal start
+
+          int qSize = 1;
+          int qStart = 0;
+          int qEnd = 1;
+          int rNumber = rowNumber+1;
+
+          while (qSize > 0) {
+              int* lvl = calloc(n, sizeof(int)); // a sub-list of the current level
+              int lvlptr = 0; // indicate which level we are currently on
+
+              int qs2 = qStart; // fixed pointers for sizing
+              int qe2 = qEnd;
+
+              for (int x = qs2; x < qe2; x++) {
+
+                  int i = q[x]; // index which we will be putting through arr to output.
+
+                  if (get_left_value(arr, n, i) == -1 || get_right_value(arr, n, i) == -1) {
+                        // read only on the last line
+                        bonusSpcL += ((int) (log10(arr[i]))+1); // get the number of spaces the character takes up
+                  }
+
+                  qStart ++; // dequeue the current node we are on
+                  qSize --;
+
+                  lvl[lvlptr] = i;
+                  lvlptr ++; // enqueue current node at a level
+
+                  if (get_left_value(arr, n, i) != -1) {
+                      q[qEnd] = 2*i+1;
+                      qEnd ++; // enqueue
+                      qSize ++;
+                  }
+                  if (get_right_value(arr, n, i) != -1) {
+                      q[qEnd] = 2*i+2;
+                      qEnd ++; // enqueue
+                      qSize ++;
+                  }
+              }
+              rNumber ++;
+          }
+          free(q);
         }
-        numSpaces --; // round down for conservation
+        if (get_right_value(arr, n, level[0])!= -1) {
+          // do a Level order traversal on the right for spacing
+          int *q = calloc(n, sizeof(int)); // queue
+
+          q[0] = 2*level[0]+2; // pointer for this traversal start
+
+          int qSize = 1;
+          int qStart = 0;
+          int qEnd = 1;
+          int rNumber = rowNumber+1;
+
+          while (qSize > 0) {
+              int* lvl = calloc(n, sizeof(int)); // a sub-list of the current level
+              int lvlptr = 0; // indicate which level we are currently on
+
+              int qs2 = qStart; // fixed pointers for sizing
+              int qe2 = qEnd;
+
+              for (int x = qs2; x < qe2; x++) {
+
+                  int i = q[x]; // index which we will be putting through arr to output.
+
+                  if (get_left_value(arr, n, i) == -1 || get_right_value(arr, n, i) == -1) {
+                        // read only on the "last" line
+                        bonusSpcR += ((int) (log10(arr[i]))+1); // get the number of spaces the character takes up
+                  }
+
+                  qStart ++; // dequeue the current node we are on
+                  qSize --;
+
+                  lvl[lvlptr] = i;
+                  lvlptr ++; // enqueue current node at a level
+
+                  if (get_left_value(arr, n, i) != -1) {
+                      q[qEnd] = 2*i+1;
+                      qEnd ++; // enqueue
+                      qSize ++;
+                  }
+                  if (get_right_value(arr, n, i) != -1) {
+                      q[qEnd] = 2*i+2;
+                      qEnd ++; // enqueue
+                      qSize ++;
+                  }
+              }
+              rNumber ++;
+          }
+          free(q);
+        }
+        if (get_right_value(arr, n, level[0])!= -1 && get_left_value(arr, n, level[0])!= -1) {
+           // take average
+           int diff = bonusSpcR-bonusSpcL;
+           numSpaces += (bonusSpcL + bonusSpcR)/2 -1;
+        }
+        else {
+          numSpaces += (bonusSpcL + bonusSpcR - 1);
+          // round down for conservation
+        }  
 
         for (int y = 0; y < numSpaces; y++) {
           // print the actual spaces
@@ -95,35 +199,127 @@ void print_tree(float arr[], int n) {
         // Stage 2: Values and interstitial spaces
         for (int x = 0; x < levelptr; x++) {
             printf("%g", arr[level[x]]);
-
-            if (rowNumber != 0) { // TBD: CHECK if I need to print the rest of the interstitial spaces
-
               int numSpaces = exp2(2+(numRows-rowNumber)); // baseline spaces assuming NO width of members. so, we must add those on.
 
-              float L = get_left_value(arr, n, level[x]);
-              float R = get_right_value(arr, n, level[x]);
+               // do a level order traversal on the RIGHT of the current node and the left of the next node
+               // Here be dragons again
+               if (rowNumber-1 != 0 && rowNumber != numRows) {
 
-              // complex space determination
-              if (L != -1) {
-                numSpaces += log10(L)+1;
-              }
-              else if (R != -1) {
-                numSpaces += log10(R)+1;
-              }
-              else if (L!= -1 && R != -1) {
-                numSpaces += (log10(L)+1 + log10(R)+1)/2;
+                 // Right traversal
+                 if (get_right_value(arr, n, level[x])!= -1) {
+                   int *q = calloc(n, sizeof(int)); // queue
+
+                  q[0] = 2*level[x]+2; // pointer for this traversal start
+
+                  int qSize = 1;
+                  int qStart = 0;
+                  int qEnd = 1;
+                  int rNumber = rowNumber+1;
+
+                  while (qSize > 0) {
+                      int* lvl = calloc(n, sizeof(int)); // a sub-list of the current level
+                      int lvlptr = 0; // indicate which level we are currently on
+
+                      int qs2 = qStart; // fixed pointers for sizing
+                      int qe2 = qEnd;
+
+                      for (int x = qs2; x < qe2; x++) {
+
+                          int i = q[x]; // index which we will be putting through arr to output.
+
+                          // add spaces depending on RIGHT of current node and LEFT of next node in the level
+
+                          if (get_left_value(arr, n, i) == -1 || get_right_value(arr, n, i) == -1) {
+                                // read only on the last line
+                                numSpaces += ((int) (log10(arr[i]))+1); // get the number of spaces the character takes up
+                          }
+
+                          qStart ++; // dequeue the current node we are on
+                          qSize --;
+
+                          lvl[lvlptr] = i;
+                          lvlptr ++; // enqueue current node at a level
+
+                          if (get_left_value(arr, n, i) != -1) {
+                              q[qEnd] = 2*i+1;
+                              qEnd ++; // enqueue
+                              qSize ++;
+                          }
+                          if (get_right_value(arr, n, i) != -1) {
+                              q[qEnd] = 2*i+2;
+                              qEnd ++; // enqueue
+                              qSize ++;
+                          }
+                      }
+                      rNumber ++;
+                  }
+                  free(q);
+
+                  numSpaces -= (int)(log10(arr[level[x]])); // round down for conservation
+               }
+                // Left traversal
+                 if (get_left_value(arr, n, level[x+1])!= -1) {
+                   int *q = calloc(n, sizeof(int)); // queue
+
+                  q[0] = 2*level[x+1]+1; // pointer for this traversal start
+
+                  int qSize = 1;
+                  int qStart = 0;
+                  int qEnd = 1;
+                  int rNumber = rowNumber+1;
+
+                  while (qSize > 0) {
+                      int* lvl = calloc(n, sizeof(int)); // a sub-list of the current level
+                      int lvlptr = 0; // indicate which level we are currently on
+
+                      int qs2 = qStart; // fixed pointers for sizing
+                      int qe2 = qEnd;
+
+                      for (int x = qs2; x < qe2; x++) {
+
+                          int i = q[x]; // index which we will be putting through arr to output.
+
+                          // add spaces depending on RIGHT of current node and LEFT of next node in the level
+
+                          if (get_left_value(arr, n, i) == -1 || get_right_value(arr, n, i) == -1) {
+                                // read only on the last line
+                                numSpaces += ((int) (log10(arr[i]))+1); // get the number of spaces the character takes up
+                          }
+
+                          qStart ++; // dequeue the current node we are on
+                          qSize --;
+
+                          lvl[lvlptr] = i;
+                          lvlptr ++; // enqueue current node at a level
+
+                          if (get_left_value(arr, n, i) != -1) {
+                              q[qEnd] = 2*i+1;
+                              qEnd ++; // enqueue
+                              qSize ++;
+                          }
+                          if (get_right_value(arr, n, i) != -1) {
+                              q[qEnd] = 2*i+2;
+                              qEnd ++; // enqueue
+                              qSize ++;
+                          }
+                      }
+                      rNumber ++;
+                  }
+                  free(q);
+
+                  numSpaces -= (int)(log10(arr[level[x]])); // round down for conservation
+               }
+
               }
 
               for (int y = 0; y < numSpaces; y++) {
                 printf(" ");
               }
             } 
-        }
 
         free(level); // clear memory
         printf("\n"); // nextline
     }
-
 }
 
 float get_parent_value(float arr[], int n, int index) {
