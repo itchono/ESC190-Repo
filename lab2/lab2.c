@@ -196,40 +196,92 @@ int is_max_heap(float arr[], int n) {
 }
 
 void heapify(float arr[], int n) {
-  heapifyHelper(arr, n, 0);
+  // DONE
+
+  for (int x = n/2-1; x >= 0; x--) {
+    heapifyHelper(arr, n, x);
+  }
     
 }
 
 void heapifyHelper(float arr[], int n, int i) {
-  int largest = i; // Initialize largest as root 
-    int l = 2*i + 1; // left = 2*i + 1 
-    int r = 2*i + 2; // right = 2*i + 2 
+  // borrowed from python exercises
+
+  int max = i;
+    int L = 2*i + 1;
+    int R = 2*i + 2;
   
-    // If left child is larger than root 
-    if (l < n && arr[l] > arr[largest]) 
-        largest = l; 
+    // find the maiimum value of the children
+    if (L < n && arr[L] > arr[max]) {
+        max = L; 
+    }
   
-    // If right child is larger than largest so far 
-    if (r < n && arr[r] > arr[largest]) 
-        largest = r; 
+    if (R < n && arr[R] > arr[max]) {
+        max = R;
+    }
   
-    // If largest is not root 
-    if (largest != i) 
-    { 
-        swap(arr[i], arr[largest]); 
+    // bring max to root
+    if (max != i) { 
+        float temp = arr[i];
+        arr[i] = arr[max];
+        arr[max] = temp;
   
-        // Recursively heapify the affected sub-tree 
-        heapifyHelper(arr, n, largest); 
+        heapifyHelper(arr, n, max); // call same function recursively
     } 
 }
 
 void heapsort(float arr[], int n) {
-    /* Your code goes here */
+  // DONE
+  // builds upon heapify stuff
+    
+    // heapify array
+    heapify(arr, n);
+
+    // use the idea of sorted and unsorted partitions
+
+    for (int x = n-1; x>=0; x--) {
+
+      float temp = arr[x];
+      arr[x] = arr[0];
+      arr[0] = temp;
+
+      // dequeue root (max) to the end
+
+      heapify(arr, x); // heapify an array of remaining size
+    }
 }
 
 float find_most_common_element(float arr[], int n) {
-    // use depth first traversal
+    // DONE
+    // can use a sorted list to speed things up
 
-    
+    heapsort(arr, n);
+
+    int repetitionMax = 0;
+    int repeats = 0;
+    float mode = -1;
+
+    if (n == 1) {
+      return arr[0];
+    }
+    else {
+      for (int x = 1; x < n; x ++) {
+        if (arr[x] == arr[x-1]) {
+          repeats ++;
+        }
+        else {
+          // "Combo" has been broken; collect data
+          if (repeats > repetitionMax) {
+            mode = arr[x-1];
+            repetitionMax = repeats;
+          }
+
+          repeats = 0; // reset repeats for next one
+        }
+      }
+    }
+
+    return mode;
+
 
 }
