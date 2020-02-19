@@ -1,0 +1,3 @@
+file(REMOVE_RECURSE
+  "THATS_IN_C.lib"
+)
