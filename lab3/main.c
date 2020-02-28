@@ -3,8 +3,23 @@
 #include "calc.h"
 #include "stack.h"
 
+void printStack(struct stack* s) {
+	// prints a stack from top to bottom.
+
+	struct stack_entry *entry = s->top; // determine active entry to be wiped
+	struct stack_entry *next; // next pointer
+
+	printf("Stack Located at %p; size %d:\n", s, s->size);
+
+	while(entry != NULL) {
+		next = entry->next; // set next accordingly
+		printf("%g\n", entry->value);
+		entry = next; // next value
+	}
+}
 
 int main(int argc, char* argv[]){
+	/*
 	if(argc!=3){
 		printf("Missing input and output file names. Usage:\n./rpn input output\n");
 	}else{
@@ -13,4 +28,31 @@ int main(int argc, char* argv[]){
 	}
 	
 	return 0;
+	*/
+
+	// stack testing
+	struct stack *stk = create_stack();
+
+	printStack(stk);
+
+	push(stk, 2);
+	push(stk, 4.01);
+	push(stk, 6);
+
+	printStack(stk);
+
+	printf("Pop!: %g\n", pop(stk));
+	printf("Pop!: %g\n", pop(stk));
+	printf("Pop!: %g\n", pop(stk));
+	printf("Pop!: %g\n", pop(stk));
+	printStack(stk);
+	
+	printf("%g", compute_rpn("1 1 + 1 +"));
+
+	printf("%s", get_expressions("sample_in.txt"));
+
+
+	return 0;
 }
+
+

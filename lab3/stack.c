@@ -18,8 +18,8 @@ struct stack* create_stack(){
 
 void delete_stack(struct stack* s){
 	// deletes a stack going from top to bottom.
-	struct stack_entry *entry; // determine active entry to be wiped
-	struct stack_entry *next = s->top; // next pointer
+	struct stack_entry *entry = s->top; // determine active entry to be wiped
+	struct stack_entry *next; // next pointer
 
 	while(entry != NULL) {
 		next = entry->next; // set next accordingly

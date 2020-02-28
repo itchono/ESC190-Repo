@@ -293,5 +293,5 @@ class QueueUsingStacks:
 if __name__ == "__main__":
     print(check_parentheses("{d: [5, 3, 2], e: (1, (2, 2))}"))
     print(reverse_string("Apple"))
-    print(postfix_evaluate("12*6+"))
+    print(postfix_evaluate("12*86+"))
     
