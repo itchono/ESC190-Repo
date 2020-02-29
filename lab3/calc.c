@@ -16,7 +16,9 @@ double compute_rpn(char* rpn){
 
 	int i = 0; // index of char array
 
-	char strBuffer[] = "";
+	char buffer[MAX_LENGTH];
+
+	buffer[0] = '\0'; // initialize properly
 
 	while (rpn[i] != '\0') {
 		// go until we see '\0' character
@@ -27,30 +29,53 @@ double compute_rpn(char* rpn){
 
 
 		if (rpn[i] == ' ') {
-			// stop command
+			// stop command for parsing number
 
 			// if numeric, push
-			double num = atof(strBuffer);
+			double num = atof(buffer);
 			push(stk, num); // put number to top
-			strBuffer[0] = '\0'; // reset string
+			buffer[0] = '\0'; // reset buffer
 		}
 
 		else if (rpn[i] >= 48 && rpn[i] <= 57) {
-			// check for numeric // TBD FIGURE OUT MORE
-			strcat(strBuffer, &rpn[i]); // append to buffer
+			// check for numeric --> add to buffer for reading a number
+			strcat(buffer, (rpn+i)); // add to buffer
 		}
 
-		else if (rpn[i] == '+') {
-			// begin operation
-			total = 0;
-			while(stk->size != 0) {
-				total += pop(stk);
+		else {
+			// operator
+
+			total = (stk->size == 0) ? 0 : pop(stk); // FIX ME
+
+			switch (rpn[i]) {
+				case '+':
+					// begin operation
+
+					while(stk->size != 0) {
+						total += pop(stk);
+					}
+
+					push(stk, total); // put into stack
+					
+
+					break;
+				
+				case '-':
+					
+					while(stk->size != 0) {
+						total -= pop(stk);
+					}
+
+					push(stk, total);
+
+					break;
+
+			
 			}
-
-			push(stk, total); // put into stack
-
-			i++; // advance to next non-space character
+			i++; // advance to next non-space character since a space will follow any operation
+			
 		}
+
 		i++;
 	}
 
@@ -59,24 +84,65 @@ double compute_rpn(char* rpn){
 }
 
 char* get_expressions(char* filename){
-	char output[] = "asdf";
+	// reads file in --> string out
+	// WORKS
 
-	FILE *input_stream=fopen(filename,"r");
+	int numLines = 0;
 
-	char file_line[MAX_LENGTH];
+	char buffer[MAX_LENGTH]; // buffer
 
-	while (fgets(file_line, sizeof(file_line), input_stream) != NULL) {
-		strcat(output, file_line);
-		strcat(output, "\n");
+	FILE *f = fopen(filename, "r");
+
+	while (fgets(buffer, sizeof(buffer), f) != NULL) {
+		numLines++; // count the number of lines
+	}
+
+	char *output = calloc(MAX_LENGTH*numLines, sizeof(char));
+
+	FILE *input_stream = fopen(filename,"r");
+
+	while (fgets(buffer, sizeof(buffer), input_stream) != NULL) {
+		strcat(output, buffer); // \n is automatically added
 	}
 	fclose(input_stream);
 
-	printf("%s", output);
-	//TBD
-
-	return output;
+	return output; // Note: this must be closed properly
 }
 
 void process_expressions(char* expressions, char* filename){
-	// TBD
+	// puts files out with completed math.
+
+	FILE*output_stream = fopen(filename,"w");
+
+	int i = 0; // position reading the char
+	
+	char buffer[MAX_LENGTH]; // buffer
+
+	buffer[0] = '\0'; // initialize properly
+
+	while (expressions[i] != '\0') {
+
+		if (expressions[i] == '\n') {
+			//printf("INPUT: %s\n", buffer);
+			// once we hit a \n, flush buffer and compute rpn
+			fprintf(output_stream, "%g\n", compute_rpn(buffer));
+
+			buffer[0] = '\0'; // reset buffer
+
+		}
+		else {
+			// janky solution to make it stop reading 10000 strings
+			char temp = expressions[i+1];
+			expressions[i+1] = '\0';
+
+			strcat(buffer, (expressions+i));
+
+			expressions[i+1] = temp;
+		}
+		i++;
+	}
+
+	fclose(output_stream);
+
+	free(expressions); // release memory? // TBD
 }

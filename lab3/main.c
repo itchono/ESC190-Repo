@@ -47,9 +47,9 @@ int main(int argc, char* argv[]){
 	printf("Pop!: %g\n", pop(stk));
 	printStack(stk);
 	
-	printf("%g", compute_rpn("1 1 + 1 +"));
+	printf("RPN RESULT: %g\n", compute_rpn("1 1 + 4 1 + 3 -"));
 
-	printf("%s", get_expressions("sample_in.txt"));
+	process_expressions(get_expressions("test.txt"), "testout.txt");
 
 
 	return 0;
