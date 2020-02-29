@@ -33,11 +33,9 @@ double pop(struct stack* s){
 	// pops top element from stack
 
 	// I: Failure cases
-	if (s == NULL || s->size == 0 || s->top == NULL) {
-		// empty or null stack --> return 0
-		return 0;
-	}
-
+	// empty or null stack --> return 0
+	if (s == NULL || s->size == 0 || s->top == NULL) return 0;
+	
 	// II: Otherwise, proceed with output
 	float ret = s->top->value;
 	struct stack_entry *next = s->top->next;

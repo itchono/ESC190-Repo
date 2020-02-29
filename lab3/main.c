@@ -33,23 +33,25 @@ int main(int argc, char* argv[]){
 	// stack testing
 	struct stack *stk = create_stack();
 
-	printStack(stk);
+	printStack(stk); // should be nothing
 
 	push(stk, 2);
 	push(stk, 4.01);
 	push(stk, 6);
 
-	printStack(stk);
+	printStack(stk); // should be 6, 4.01, 2
 
 	printf("Pop!: %g\n", pop(stk));
 	printf("Pop!: %g\n", pop(stk));
 	printf("Pop!: %g\n", pop(stk));
-	printf("Pop!: %g\n", pop(stk));
+	printf("Pop!: %g\n", pop(stk)); // Should be zero
 	printStack(stk);
 	
-	printf("RPN RESULT: %g\n", compute_rpn("1 1 + 4 1 + 3 -"));
+	printf("RPN RESULT: %g\n", compute_rpn("1 1 + 4 1 +"));
 
-	process_expressions(get_expressions("test.txt"), "testout.txt");
+	//process_expressions(get_expressions("test.txt"), "testout.txt");
+
+	delete_stack(stk);
 
 
 	return 0;

@@ -7,6 +7,22 @@
 
 #define MAX_LENGTH 255
 
+// DELETE AFTERWARDS
+void printStack2(struct stack* s) {
+	// prints a stack from top to bottom.
+
+	struct stack_entry *entry = s->top; // determine active entry to be wiped
+	struct stack_entry *next; // next pointer
+
+	printf("Stack size %d:\n", s->size);
+
+	while(entry != NULL) {
+		next = entry->next; // set next accordingly
+		printf("%g\n", entry->value);
+		entry = next; // next value
+	}
+}
+
 double compute_rpn(char* rpn){
 	/*Your code goes here*/
 
@@ -21,12 +37,11 @@ double compute_rpn(char* rpn){
 	buffer[0] = '\0'; // initialize properly
 
 	while (rpn[i] != '\0') {
-		// go until we see '\0' character
+		// go until we see '\0' character denoting end of string
 
 		// general algorithm:
 		// 1st input will always be numeric --> we must cast to int etc.
 		// STOP once we hit a space and prepare for next command
-
 
 		if (rpn[i] == ' ') {
 			// stop command for parsing number
@@ -44,8 +59,9 @@ double compute_rpn(char* rpn){
 
 		else {
 			// operator
+			printStack2(stk);
 
-			total = (stk->size == 0) ? 0 : pop(stk); // FIX ME
+			total = pop(stk);
 
 			switch (rpn[i]) {
 				case '+':
@@ -54,24 +70,18 @@ double compute_rpn(char* rpn){
 					while(stk->size != 0) {
 						total += pop(stk);
 					}
-
-					push(stk, total); // put into stack
-					
-
 					break;
 				
 				case '-':
-					
 					while(stk->size != 0) {
 						total -= pop(stk);
 					}
-
-					push(stk, total);
-
 					break;
 
 			
 			}
+			push(stk, total);
+			printf("Running Total:\n%g\n", total);
 			i++; // advance to next non-space character since a space will follow any operation
 			
 		}
