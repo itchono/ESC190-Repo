@@ -5,7 +5,7 @@
 #include "calc.h"
 #include "stack.h"
 
-#define MAX_LENGTH 256 // max is 256
+#define MAX_LENGTH 257 // max is 256 + 1 = 257 for \n
 
 double compute_rpn(char* rpn){
 	// main calculator
