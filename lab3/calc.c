@@ -121,6 +121,8 @@ char* get_expressions(char* filename){
 		numLines++; // count the number of lines
 	}
 
+	fclose(f); // CLOSE FILE
+
 	char *output = calloc(MAX_LENGTH*numLines, sizeof(char));
 
 	FILE *input_stream = fopen(filename,"r");
