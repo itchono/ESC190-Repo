@@ -25,11 +25,12 @@ int main(int argc, char* argv[]){
 	}else{
 		char* expr = get_expressions(argv[1]);
 		process_expressions(expr, argv[2]);
+		free(expr);
 	}
 	
 	return 0;
 	*/
-
+	/*
 	// stack testing
 	struct stack *stk = create_stack();
 
@@ -46,12 +47,16 @@ int main(int argc, char* argv[]){
 	printf("Pop!: %g\n", pop(stk));
 	printf("Pop!: %g\n", pop(stk)); // Should be zero
 	printStack(stk);
+	*/
 	
-	printf("RPN RESULT: %g\n", compute_rpn("1 1 + 4 1 +"));
+	printf("RPN RESULT: %g\n", compute_rpn("2 2 * i 1 + .25 + 1.5 *"));
 
-	//process_expressions(get_expressions("test.txt"), "testout.txt");
+	char* exprs = get_expressions("sample_in.txt");
 
-	delete_stack(stk);
+	process_expressions(exprs, "testout.txt");
+
+
+	free(exprs);
 
 
 	return 0;

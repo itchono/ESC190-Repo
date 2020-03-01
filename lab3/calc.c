@@ -5,34 +5,16 @@
 #include "calc.h"
 #include "stack.h"
 
-#define MAX_LENGTH 255
-
-// DELETE AFTERWARDS
-void printStack2(struct stack* s) {
-	// prints a stack from top to bottom.
-
-	struct stack_entry *entry = s->top; // determine active entry to be wiped
-	struct stack_entry *next; // next pointer
-
-	printf("Stack size %d:\n", s->size);
-
-	while(entry != NULL) {
-		next = entry->next; // set next accordingly
-		printf("%g\n", entry->value);
-		entry = next; // next value
-	}
-}
+#define MAX_LENGTH 256 // max is 256
 
 double compute_rpn(char* rpn){
-	/*Your code goes here*/
+	// main calculator
 
 	struct stack *stk = create_stack();
 
-	double total = 0;
-
 	int i = 0; // index of char array
 
-	char buffer[MAX_LENGTH];
+	char buffer[MAX_LENGTH]; // string buffer for parsing	
 
 	buffer[0] = '\0'; // initialize properly
 
@@ -45,52 +27,84 @@ double compute_rpn(char* rpn){
 
 		if (rpn[i] == ' ') {
 			// stop command for parsing number
-
-			// if numeric, push
 			double num = atof(buffer);
 			push(stk, num); // put number to top
 			buffer[0] = '\0'; // reset buffer
 		}
 
-		else if (rpn[i] >= 48 && rpn[i] <= 57) {
+		else if ((rpn[i] >= 48 && rpn[i] <= 57) || rpn[i] == 46) {
 			// check for numeric --> add to buffer for reading a number
 			strcat(buffer, (rpn+i)); // add to buffer
 		}
 
 		else {
-			// operator
-			printStack2(stk);
+			// operators
 
-			total = pop(stk);
+			if (rpn[i] == '+' || rpn[i] == '-' || rpn[i] == '*'  || rpn[i] == '/'  || rpn[i] == '^' || rpn[i] == 'f') {
+				// binary
+				double o2 = pop(stk);
+				double o1 = pop(stk); // pop the operands
 
-			switch (rpn[i]) {
-				case '+':
-					// begin operation
-
-					while(stk->size != 0) {
-						total += pop(stk);
-					}
-					break;
-				
-				case '-':
-					while(stk->size != 0) {
-						total -= pop(stk);
-					}
-					break;
-
-			
+				switch (rpn[i]) {
+					case '+':
+						push(stk, (o1+o2));
+						break;
+					case '-':
+						push(stk, (o1-o2));
+						break;
+					case '*':
+						push(stk, (o1*o2));
+						break;
+					case '/':
+						push(stk, (o1/o2));
+						break;
+					case '^':
+						push(stk, pow(o1, o2));
+						break;
+					case 'f':
+						push(stk, o2);
+						push(stk, o1);
+						break;
+				}
 			}
-			push(stk, total);
-			printf("Running Total:\n%g\n", total);
-			i++; // advance to next non-space character since a space will follow any operation
-			
-		}
 
-		i++;
+			else if (rpn[i] == 's'  || rpn[i] == 'c' || rpn[i] == 't' || rpn[i] == 'e' || rpn[i] == 'i' || rpn[i] == 'm' || rpn[i] == 'r') {
+				double o = pop(stk); // pop the single operand
+				
+				switch (rpn[i]) {
+					case 's':
+						push(stk, sin(o));
+						break;
+					case 'c':
+						push(stk, cos(o));
+						break;
+					case 't':
+						push(stk, tan(o));
+						break;
+					case 'e':
+						push(stk, exp(o));
+						break;
+					case 'i':
+						push(stk, 1/o);
+						break;
+					case 'm':
+						push(stk, (-1)*(o));
+						break;
+					case 'r':
+						push(stk, sqrt(o));
+						break;
+				}
+			}
+			if (rpn[i+1] != '\0') i++; // advance to next non-space character since a space will follow any operation
+			// except in case that we hit end of string
+		}
+		i++; // parse next character
 	}
 
-	return total;
-
+	double v = pop(stk); // get final result
+	// push numeric to stack if there was no space delimiter
+	delete_stack(stk); // FREE stack
+	return (v!=0) ? v : atof(buffer); // return top value
 }
 
 char* get_expressions(char* filename){
@@ -133,7 +147,6 @@ void process_expressions(char* expressions, char* filename){
 	while (expressions[i] != '\0') {
 
 		if (expressions[i] == '\n') {
-			//printf("INPUT: %s\n", buffer);
 			// once we hit a \n, flush buffer and compute rpn
 			fprintf(output_stream, "%g\n", compute_rpn(buffer));
 
@@ -153,6 +166,6 @@ void process_expressions(char* expressions, char* filename){
 	}
 
 	fclose(output_stream);
-
-	free(expressions); // release memory? // TBD
+	//free(expressions); // release memory? actually NO
+	// ASSUME THAT TESTER SCRIPT WILL FREE THIS POINTER
 }
