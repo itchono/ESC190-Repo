@@ -48,7 +48,6 @@ int main(int argc, char* argv[]){
 	printf("Pop!: %g\n", pop(stk)); // Should be zero
 	printStack(stk);
 	*/
-	
 	printf("RPN RESULT: %g\n", compute_rpn("2 2 * i 1 + .25 + 1.5 *"));
 
 	char* exprs = get_expressions("sample_in.txt");
