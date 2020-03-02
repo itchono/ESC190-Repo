@@ -27,8 +27,7 @@ double compute_rpn(char* rpn){
 
 		if (rpn[i] == ' ') {
 			// stop command for parsing number
-			double num = atof(buffer);
-			push(stk, num); // put number to top
+			push(stk, atof(buffer)); // put number to top
 			buffer[0] = '\0'; // reset buffer
 		}
 
