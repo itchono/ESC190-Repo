@@ -32,17 +32,19 @@ LinkedEmployee** get_employees(char* fn){
     int i = 0; // index of employee
 
     while(fgets(buffer, (MAX_FIELD+1)*MAX_EID, fin) != NULL) {
+        printf(buffer);
 
         employees[i] = malloc(sizeof(struct Employee)); // object
 
-        employees[i] -> id = atoi(strtok(buffer, ' '));
-        employees[i] -> firstname = strtok(NULL, ' ');
+        employees[i] -> id = atoi(strtok(buffer, "\t"));
+        strcpy(employees[i] -> firstname, strtok(NULL, "\t"));
+        strcpy(employees[i] -> lastname, strtok(NULL, "\t"));
+        employees[i] -> gender = (strtok(NULL, ' '))[0]; // TBD does this even work and if not then what is the point of life
+        strcpy(employees[i] -> department, strtok(NULL, "\t"));
+        strcpy(employees[i] -> position, strtok(NULL, "\t"));
 
-
-
+        printf("%d", employees[i] -> id);
     }
-
-
 
     fclose(fn);
 
