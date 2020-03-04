@@ -1,0 +1,53 @@
+==== ESC190 Week 8/9 Exercises ====
+
+(1) Convert the following base-10 (decimal) numbers to their binary and hexadecimal representations.
+(Hint: figure out how many bits you will need first)
+124
+234
+1987
+3456
+40
+90
+-------------
+(2) Create the following files:
+
+week8.h
+week8.c
+
+..Fill the contents of week8.h with:
+- necessary includes
+- function declarations for the functions defined in week8.c
+- a struct declaration for a doubly linked list (Q: what should the members be?)
+- a struct declaration for a doubly linked list node (Q: what should the members be?)
+
+..Fill the contents of week8.c with:
+function definitions for functions which:
+- delete the node at index i
+- insert a node at index i
+- delete an entire doubly linked list
+
+..Compile your code (Q: what flags will you use? Try -Wall, -g)
+..Run the executable and ensure that it runs valgrind clean.
+
+Note: consider implementing this for a singly linked list first.
+-------------
+(3) Implement a queue using the code from part (2). How would you test that this works?
+-------------
+(4) Consider the hash table with chaining presented in lecture. In preparation for lab 4, assume you are given a hash function and
+a number of keys int n, number of buckets int b.
+
+..How would you perform the following operations in C? If each of the following is a function, what are the types of
+the input arguments and return values?
+
+- create a new hash table with b buckets
+- insert a key into the associated bucket without a collision occuring
+- insert a key into the associated bucket with a collision occuring, with linked-list chaining
+- deleting the hash table (with no memory leaks or valgrind errors)
+
+..Look up the "trivial hash function". Hash the following keys using the trivial hash function:
+- "CATCAT"
+- "DOG!!!"
+- "LOVEESC190"
+- "CISCOOL"
+
+(Hint: Use the ASCII table and part 1 of this exercise)
