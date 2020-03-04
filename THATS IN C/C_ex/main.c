@@ -1,3 +1,5 @@
+// Edited by Mingo
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -18,10 +20,8 @@ typedef struct Employee{
 }LinkedEmployee;
 
 LinkedEmployee** get_employees(char* fn){
-    LinkedEmployee** employees;
-    // Complete this function
-
-    employees = calloc(MAX_COUNT, sizeof(LinkedEmployee*));
+    // Done
+    LinkedEmployee** employees = calloc(MAX_COUNT, sizeof(LinkedEmployee*));
 
     FILE* fin = fopen(fn, "r");
 
@@ -32,8 +32,6 @@ LinkedEmployee** get_employees(char* fn){
     int i = 0; // index of employee
 
     while(fgets(buffer, (MAX_FIELD+1)*MAX_EID, fin) != NULL) {
-        //printf(buffer);
-
         employees[i] = malloc(sizeof(struct Employee)); // object
 
         employees[i] -> id = atoi(strtok(buffer, "\t"));
@@ -42,10 +40,8 @@ LinkedEmployee** get_employees(char* fn){
         employees[i] -> gender = (strtok(NULL, "\t"))[0]; // TBD does this even work and if not then what is the point of life
         strcpy(employees[i] -> department, strtok(NULL, "\t"));
         strcpy(employees[i] -> position, strtok(NULL, "\t"));
-        strcpy(employees[i] -> supervisor_id, strtok(NULL, "\t"));
-
-        //printf("%d", employees[i] -> id);
-
+        employees[i] -> supervisor_id = atoi(strtok(NULL, "\t"));
+        employees[i] -> supervisor = NULL;
         i++;
     }
 
@@ -55,28 +51,62 @@ LinkedEmployee** get_employees(char* fn){
 }
 
 LinkedEmployee** index_employees(LinkedEmployee** employees){
-    LinkedEmployee** employee_index;
-    // Complete this function
+    // Done
+    LinkedEmployee** employee_index = calloc(MAX_COUNT, sizeof(LinkedEmployee*));
 
+    for (int i = 0; i < MAX_COUNT; i++) {
+
+        int j = 0;
+        // traverse fully through the existing employee list for a match
+        while (employees[j] != NULL) {
+            if (employees[j]->id == i) employee_index[i] = employees[j];
+            j++;
+        }
+    }
     return employee_index;
 }
 
 void link_employees(LinkedEmployee** employees, LinkedEmployee** employee_index){
-    // Complete this function
+    // Connects to supervisor
+    // Done
 
-    return;
+    int i = 0;
+    while (employees[i] != NULL) {
+        if (employees[i]->supervisor_id != 0 && employee_index[employees[i]->supervisor_id] != NULL) {
+            employees[i]->supervisor = employee_index[employees[i]->supervisor_id];
+        } 
+        i++;
+    }
 }
         
 void print_supervisory_chain(LinkedEmployee employee){
     // Complete this function
+    // done backwards; fix needed
 
-    return;
+    if (employee.supervisor != NULL) {
+        printf("%s %s",
+        employee.firstname, 
+        employee.lastname);
+        if (employee.supervisor->supervisor != NULL){
+            printf(" --> ");
+            print_supervisory_chain(*(employee.supervisor));
+        }
+    }
 }
 
 void clear_memory(LinkedEmployee** employees, LinkedEmployee** employee_index){
     // Complete this function
-    
-    return;
+
+    int j = 0;
+    // traverse fully through the existing employee list
+    while (employees[j] != NULL) {
+        free(employees[j]);
+        j++;
+    }
+    // this is guaranteed to free all referneces for employee_index too
+
+    free(employees);
+    free(employee_index);
 }
 
 int main()
