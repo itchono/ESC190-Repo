@@ -34,6 +34,7 @@ double compute_rpn(char* rpn){
 		else if ((rpn[i] >= 48 && rpn[i] <= 57) || rpn[i] == 46) {
 			// check for numeric --> add to buffer for reading a number
 			strcat(buffer, (rpn+i)); // add to buffer
+			
 		}
 
 		else {
