@@ -27,14 +27,16 @@ LinkedEmployee** get_employees(char* fn){
 
     char buffer[(MAX_FIELD+1)*MAX_EID]; // line buffer
 
-    fgets(buffer, (MAX_FIELD+1)*MAX_EID, fin); // purge first line
+    fgets(buffer, (MAX_FIELD+1)*MAX_EID, fin); // purge first line by force reading --> advance to next position
 
     int i = 0; // index of employee
 
     while(fgets(buffer, (MAX_FIELD+1)*MAX_EID, fin) != NULL) {
         employees[i] = malloc(sizeof(struct Employee)); // object
 
+        // Twist the edges of spacetime to use strtok
         employees[i] -> id = atoi(strtok(buffer, "\t"));
+        // metal note: strtok takes in NULL on subsequent calls for tokens. Generally it sucks so don't use it
         strcpy(employees[i] -> firstname, strtok(NULL, "\t"));
         strcpy(employees[i] -> lastname, strtok(NULL, "\t"));
         employees[i] -> gender = (strtok(NULL, "\t"))[0]; // TBD does this even work and if not then what is the point of life
@@ -59,7 +61,7 @@ LinkedEmployee** index_employees(LinkedEmployee** employees){
         int j = 0;
         // traverse fully through the existing employee list for a match
         while (employees[j] != NULL) {
-            if (employees[j]->id == i) employee_index[i] = employees[j];
+            if (employees[j]->id == i) employee_index[i] = employees[j]; // if match, directly assign pointer
             j++;
         }
     }
@@ -72,30 +74,34 @@ void link_employees(LinkedEmployee** employees, LinkedEmployee** employee_index)
 
     int i = 0;
     while (employees[i] != NULL) {
+        // while loop to traverse existing employees
         if (employees[i]->supervisor_id != 0 && employee_index[employees[i]->supervisor_id] != NULL) {
             employees[i]->supervisor = employee_index[employees[i]->supervisor_id];
+            // add corresponding supervisor ID if they exist
         } 
         i++;
     }
 }
         
 void print_supervisory_chain(LinkedEmployee employee){
-    // Complete this function
-    // done backwards; fix needed
+    // lists people based on chain of command (back of arrow = highest in command)
+    // Done
 
     if (employee.supervisor != NULL) {
-        printf("%s %s",
+
+        // call next person, sort of like a post-order traversal
+        print_supervisory_chain(*(employee.supervisor));
+        printf(" -> ");
+        
+    }
+    printf("%s %s",
         employee.firstname, 
         employee.lastname);
-        if (employee.supervisor->supervisor != NULL){
-            printf(" --> ");
-            print_supervisory_chain(*(employee.supervisor));
-        }
-    }
 }
 
 void clear_memory(LinkedEmployee** employees, LinkedEmployee** employee_index){
-    // Complete this function
+    // Purges memory back to zero to have sustainable programming
+    // Done
 
     int j = 0;
     // traverse fully through the existing employee list
@@ -106,7 +112,7 @@ void clear_memory(LinkedEmployee** employees, LinkedEmployee** employee_index){
     // this is guaranteed to free all referneces for employee_index too
 
     free(employees);
-    free(employee_index);
+    free(employee_index); // finally, free the double pointers
 }
 
 int main()
