@@ -2,12 +2,40 @@
 
 (1) Convert the following base-10 (decimal) numbers to their binary and hexadecimal representations.
 (Hint: figure out how many bits you will need first)
-124
-234
-1987
-3456
+124 = 127 - 3
+Bin: 64 + 32 + 16 + 8 + 4
+1111100 needs 7 bits
+124 / 16 = 7.75 = 124 - 7*16
+Hex: 7C
+
+234 = 256 - 22
+128 + 64 + 32 + ( ) + 8 + () + 2 + ()
+11101010 8 bits
+
+Hex: EA
+
+1987 11 bits
+1024 + 512 + 256 + 128 + 64 + () + () + () + () + 2 + 1
+11111000011
+
+Hex: 7C3
+
+3456 12 bits
+2048 + 1024 + () + 256 + 128 + () + () + () + () + () + () + ()
+110110000000
+
 40
+
+32 + () + 8 + () + () + ()
+101000
+
+28
+
 90
+1011010
+
+hex 5A
+
 -------------
 (2) Create the following files:
 
@@ -40,12 +68,16 @@ a number of keys int n, number of buckets int b.
 the input arguments and return values?
 
 - create a new hash table with b buckets
+args: int b, int n
+return: 
 - insert a key into the associated bucket without a collision occuring
+
 - insert a key into the associated bucket with a collision occuring, with linked-list chaining
 - deleting the hash table (with no memory leaks or valgrind errors)
 
 ..Look up the "trivial hash function". Hash the following keys using the trivial hash function:
 - "CATCAT"
+676584676584
 - "DOG!!!"
 - "LOVEESC190"
 - "CISCOOL"
