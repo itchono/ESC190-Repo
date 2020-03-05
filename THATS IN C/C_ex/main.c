@@ -147,5 +147,7 @@ int main()
     print_supervisory_chain(*employee_index[13]);
     printf("\n");
 
+    clear_memory(employees, employee_index);
+
     return 0;
 }
