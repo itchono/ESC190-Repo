@@ -68,18 +68,58 @@ a number of keys int n, number of buckets int b.
 the input arguments and return values?
 
 - create a new hash table with b buckets
-args: int b, int n
-return: 
+args: int b
+return: hash table struct pointer
+
+create an array of buckets using calloc, from 0 to n
+
+each bucket stores either an object or a int etc.
+
+(apply hash to each n and store the data matched with n in bucket b
+
+array[hash(K)] = (K);)
+
+
 - insert a key into the associated bucket without a collision occuring
+args: key K, hash table h
+
+if array[hash(N)] != 0
+
+then, for (int x = hash(K); x < n; x++) {
+    if (array[x] == 0)
+        array[x] = K
+}
 
 - insert a key into the associated bucket with a collision occuring, with linked-list chaining
+args: key K, hash table h
+
+if array[hash(N)] != 0
+then, append element to linked list
+
+
 - deleting the hash table (with no memory leaks or valgrind errors)
 
+args: hash table h
+
+free each element in calloc'd array
+
 ..Look up the "trivial hash function". Hash the following keys using the trivial hash function:
+print([ord(i) for i in "DOG!!!"])
+
 - "CATCAT"
 676584676584
+0x9d8796dce8
+
 - "DOG!!!"
+687971333333
+0xa02e4974d5
+
 - "LOVEESC190"
+76798669698367495748
+0x429cbaf31a1c01e44
+
 - "CISCOOL"
+67738367797976
+0x3d9b9159aad8
 
 (Hint: Use the ASCII table and part 1 of this exercise)
