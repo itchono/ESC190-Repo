@@ -1,0 +1,13 @@
+Complete the program in main.c which does the following.
+1. prompts the user for an ascii code 
+2. prints the associated character.
+3. prompts the user for character 
+4. prints the associated ascii code.
+
+Question:
+How do you get scanf for characters to skip leading whitespace?
+
+char
+ascii
+casting
+scanf for char
