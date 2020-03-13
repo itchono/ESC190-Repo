@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#define SIZE 10000
 
 // array output
 void printArr(int* arr, int size){
   for (int x = 0; x < size; x++) {
       printf("%d\t", arr[x]);
   }
-  prinft("\n");
+  printf("\n");
 }
 
 // Array Creation
@@ -52,11 +54,11 @@ void merge(int* arr, int size, int start, int mid, int end) {
 }
 
 // main recursive mergesort
-void mergeSort(int* arr, int size, int start, int end){
+void mergeSort2(int* arr, int size, int start, int end){
   if (start < end) {
     int mid = (start + end) / 2;
-    mergeSort(arr, size, start, mid);
-    mergeSort(arr, size, mid+1, end);
+    mergeSort2(arr, size, start, mid);
+    mergeSort2(arr, size, mid+1, end);
     merge(arr, size, start, mid, end);
   }
   // very important to control start < end otherwise it runs forever lol
@@ -65,5 +67,19 @@ void mergeSort(int* arr, int size, int start, int end){
 
 // overloaded receiver method like in quicksort
 void mergeSort(int* arr, int size) {
-  mergeSort(arr, size, 0, size-1);
+  mergeSort2(arr, size, 0, size-1);
+}
+
+int main() {
+    int* arr = CreateRndArray(SIZE, 0, SIZE-1);
+
+    printf("Initial array:\n");
+
+    printArr(arr, SIZE);
+
+    mergeSort(arr, SIZE);
+
+    printf("Sorted:\n");
+
+    printArr(arr, SIZE);
 }
