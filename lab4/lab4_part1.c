@@ -58,11 +58,9 @@ INT_HASH fibonacci_hash(INT_SIN SIN, INT_HASH num_buckets) {
 	69107783
 	**/
 
-	unsigned long long int a = round((double)W/PHI);
-	printf("Alpha: %lld\n", a);
+	unsigned long long int a = round((double)W/PHI); // this works
 	
-	return (a * (SIN % W)/((double)(W)/num_buckets));
- 
+	return (a * (SIN % W)/((double)W/num_buckets)); // TODO what is this
 }
 
 int main() {
