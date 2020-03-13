@@ -55,12 +55,11 @@ INT_HASH fibonacci_hash(INT_SIN SIN, INT_HASH num_buckets) {
 	stdout:
 	1
 	0
-	69107783
+	69107783 // WHAT
 	**/
 
 	unsigned long long int a = round((double)W/PHI); // this works
-	
-	return (a * (SIN % W)/((double)W/num_buckets)); // TODO what is this
+	return ((a * SIN % W)/((double)W/num_buckets)); // TODO what is this
 }
 
 int main() {
@@ -68,6 +67,6 @@ int main() {
 	printf("%ld\n", pearson_hash(10, 8));
 	printf("%ld\n", fibonacci_hash(10, 8));
 	printf("%ld\n", fibonacci_hash(999999999, 8));
-	printf("%ld\n", fibonacci_hash(999999999, W));
+	printf("%ld\n", fibonacci_hash(999999999, W)); // WHAT
 }
 
