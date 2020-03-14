@@ -1,4 +1,5 @@
 #include "lab4.h"
+#include <math.h>
 #define NUM_HASH_FUNCS 3
 
 HashTable *create_hash_table(int m, int mode){
@@ -37,6 +38,13 @@ HashTable *create_hash_table(int m, int mode){
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
+	HashTable* ht = malloc(sizeof(HashTable));
+
+	ht->num_buckets = (int)pow(2,m);
+	ht->mode = mode;
+	ht->num_keys = 0;
+	ht->buckets = calloc(ht->num_buckets, sizeof(Node*));
+
 }
 
 void update_without_resize(PersonalData * data, HashTable *table) {
@@ -44,6 +52,19 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 	Insert/update the data corresponding to SIN of data.
 	Update all book-keeping information.
 	**/
+
+	hash_funcs[0] = trivial_hash;
+    hash_funcs[1] = pearson_hash;
+    hash_funcs[2] = fibonacci_hash;
+	
+
+	int k = hash_funcs[table->mode](data, table->num_buckets);
+
+	// if it's a new table
+
+	table->buckets[k] = malloc(sizeof(Node));
+	table->buckets[k]->value = data;
+
 }
 
 void update_key(PersonalData * data, HashTable **table){
