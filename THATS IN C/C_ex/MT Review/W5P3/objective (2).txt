@@ -1,0 +1,19 @@
+You may recall this from last term :)
+Write a program that:
+1. prompts the user for an amount of money
+2. purchases items with associated cost in order from this list:
+"road bike" 1000
+"plane ticket" 200
+"second hand bike" 100
+"vacuum cleaner" 50
+"thrift store jacket" 20
+"subway" 5
+"cup of coffee" 2
+"paper clip" 0.1
+
+3. Prints out the items you purchased in the format.
+4. Prints out the remaining amount of money to 2 decimal places.
+"You have 0.00 dollars left."
+
+Learning objectives
+if statement

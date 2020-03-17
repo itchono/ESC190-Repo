@@ -1,0 +1,14 @@
+Complete the program in main.c which does the following.
+1. prompts the user for 3 inputs, item, quantity and total cost 
+2. prints out the price per item.
+3. format the price per item to 2 decimal places
+
+
+Question:
+What is different about the arguments for scanf for the item name compared to total cost and quantity? 
+In what scenarios do you need the '&' operator?
+
+learning objectives
+scanf
+format specifiers
+char arrays / pointers

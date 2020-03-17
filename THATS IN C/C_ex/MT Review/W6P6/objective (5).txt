@@ -1,0 +1,9 @@
+Complete the 3 functions that opens a text file and returns its contents.
+Each of the 3 functions does so in a slightly different way.
+Your complete functions should allow main to run valgrind clean once completed.
+
+
+Learning objectives
+File pointers
+Dynamic memory allocation
+char** (Array of char*)

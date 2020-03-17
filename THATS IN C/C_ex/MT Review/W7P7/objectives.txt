@@ -1,0 +1,31 @@
+You are given:
+1) a tab delimited employee.txt file
+2) pre-defined struct to represent a employee called LinkedEmployee
+
+Complete the following functions:
+1) get_employees
+2) index_employees
+3) link_employees
+4) print_supervisory_chain
+5) free_memory
+
+get_employees:
+given a char[] filename, returns an array of employees* in the form of LinkedEmployee**
+Make this array of LinkedEmployee* MAX_COUNT in length so it has enough space to store all employees. 
+You do not need to populate the "struct Employee* supervisor" attribute yet, but do populate all others.
+
+index_employees: 
+given an array of employees in the form of LinkedEmployee**, returns an indexed array of employees*, indexed_employees, such that indexed_employees[i] points to the employee with id of i
+
+link_employees
+given a full list of employee and the employee_index
+populate the "struct Employee* supervisor" attribute of all the employees (unless if they have an invalid or no supervisor).
+
+print_supervisory_chain
+see Sample.PNG 
+hint: use recursion 
+
+free memory
+given a full list of employee and the employee_index as inputs
+This function will completely free up memory used by these 2 structures.
+You main should run valgrind clean after you complete this function. 

@@ -1,0 +1,18 @@
+Write a program that:
+1: Prompts the user for a string input for a day of the week.
+e.g. monday, tuesday...
+
+2. sum the ascii values of each character in the string and print it out.
+monday -> 648
+tuesday -> 767
+
+3. Using ascii sum as switch cases, print out if the day of the week is a weekend or not.
+
+Questions:
+Why does mispelling saturday as saturdya give the right response?
+
+Learning objectives
+char[]
+iterating a char[]
+ascii
+switch statements

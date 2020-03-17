@@ -1,0 +1,8 @@
+Continuing from practice 4.
+
+Put your part of the code that iterates through the char[] to compute the ascii sum into a function.
+Complete the header file main.h.
+
+Learning objectives
+functions in c
+char[] as function arguments
