@@ -56,8 +56,8 @@ void quickSorter(int* arr, int low, int high) {
     }
     arr[left] = pivot; // restore pivot
     // begin recursive sorts of smaller arrs
-    quickSort(arr, low, left - 1); // sorts from base to L ptr-1
-    quickSort(arr, right+1, high); // sorts top half from R ptr+1 to end
+    quickSorter(arr, low, left - 1); // sorts from base to L ptr-1
+    quickSorter(arr, right+1, high); // sorts top half from R ptr+1 to end
   }
 }
 
