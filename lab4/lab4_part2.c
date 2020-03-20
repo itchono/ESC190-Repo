@@ -43,7 +43,7 @@ HashTable *create_hash_table(int m, int mode){
 	ht->num_buckets = (int)pow(2,m);
 	ht->mode = mode;
 	ht->num_keys = 0;
-	ht->buckets = calloc(ht->num_buckets, sizeof(Node*));
+	ht->buckets = calloc(ht->num_buckets, sizeof(Node*)); // fully initialized
 
 }
 
@@ -53,17 +53,79 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 	Update all book-keeping information.
 	**/
 
+	// assume size is OK
+	
 	hash_funcs[0] = trivial_hash;
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
-	
 
-	int k = hash_funcs[table->mode](data, table->num_buckets);
+	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
 
-	// if it's a new table
+	if(table->buckets[k]) {
+		switch (table->mode)
+		{
+		case 0:
+			// linked list push
 
-	table->buckets[k] = malloc(sizeof(Node));
-	table->buckets[k]->value = data;
+			Node* oldhead = table->buckets[k];
+			table->buckets[k] = malloc(sizeof(Node));
+			table->buckets[k]->next = oldhead;
+			table->buckets[k]->value = data; // new node
+			table->num_keys++;
+			break;
+
+		case 1:
+			// linear probe
+			while (table->buckets[k]) {
+				k++;
+			}
+			// now we have a bucket
+
+			table->buckets[k] = malloc(sizeof(Node));
+			table->buckets[k]->next = NULL;
+			table->buckets[k]->value = data; // new node
+			table->num_keys++;
+			break;
+
+		case 2:
+			int i = 1;
+
+			while(table->buckets[k]) {
+				k += (int) pow(i, 2);
+				i++;
+			}
+			// now we have a bucket
+			table->buckets[k] = malloc(sizeof(Node));
+			table->buckets[k]->next = NULL;
+			table->buckets[k]->value = data; // new node
+			table->num_keys++;
+			break;
+
+		case 3:
+			// cuckoo
+			while (table->buckets[k]) {
+				k++;
+			}
+			// now we have a bucket
+
+			table->buckets[k] = malloc(sizeof(Node));
+			table->buckets[k]->next = NULL;
+			table->buckets[k]->value = data; // new node
+			table->num_keys++;
+			break;
+			break;
+		
+		default:
+			break;
+		}
+
+	} else{
+		// if it's a new table
+		table->buckets[k] = malloc(sizeof(Node));
+		table->buckets[k]->next = NULL;
+		table->buckets[k]->value = data; // new node
+		table->num_keys++;
+	}
 
 }
 
@@ -169,9 +231,55 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	Bank account #:		99999-999-999999999999 
 	Date of birth:		12-31-1960 
 	**/
-	
-	
 
+	hash_funcs[0] = trivial_hash;
+    hash_funcs[1] = pearson_hash;
+    hash_funcs[2] = fibonacci_hash;
+
+	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
+
+	switch (table->mode)
+	{
+	case 0:
+		// linked list push
+		Node* currNode = table->buckets[k];
+		while (currNode->next) {
+			if(currNode->)
+			currNode = currNode->next;
+		}
+		return NULL;
+		break;
+
+	case 1:
+		// linear probe
+		while (table->buckets[k]) {
+			if (table->buckets[k]->value->SIN == SIN) {
+				return table->buckets[k]->value;
+			}
+			k++;
+		}
+		return NULL;
+		break;
+
+	case 2:
+		int i = 1;
+
+		while(table->buckets[k]) {
+			if (table->buckets[k]->value->SIN == SIN) {
+				return table->buckets[k]->value;
+			}
+			k += (int) pow(i, 2);
+			i++;
+		}
+		return NULL;
+		break;
+
+	case 3:
+		// cuckoo
+		break;
+	
+	default:
+		break;
 }
 
 void delete_table(HashTable *table){
@@ -183,6 +291,34 @@ void delete_table(HashTable *table){
 	HashTable * table = create_hash_table(1, CLOSED_ADDRESSING);
 	delete_table(table);
 	**/
+
+	if (mode == 0) {
+		// go to linked lists and PURGE
+
+		for (int x = 0; x < table->num_buckets; x++) {
+			if (table->buckets[x]) {
+
+			}
+		}
+
+
+	}
+	else if (mode == 1 || mode || 2) {
+		// search through every bucket and PURGE
+
+		for (int x = 0; x < table->num_buckets; x++) {
+			if (table->buckets[x]) {
+				free(table->buckets[x]->value); // get rid of the data in the node
+				free(table->buckets[x]); // get rid of the thing stored there
+			}
+			
+		}
+	}
+
+	free(table->buckets); // delete the array of pointers to nodes
+	free(table);
+
+
 
 }
 
@@ -203,5 +339,19 @@ HashTable *resize_table(HashTable *table){
 	Table load:        0 
 	Table load factor: 0.00 
 	**/
+
+	int n2 = table->num_buckets * 2;
+
+	HashTable* t2 = create_hash_table(n2, table->mode);
+
+	for (int x = 0; x < table->num_buckets; x++) {
+		// need to rehash all keys
+
+		
+	}
+
+
+
+
 	
 }

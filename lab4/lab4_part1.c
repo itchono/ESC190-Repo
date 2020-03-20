@@ -62,11 +62,3 @@ INT_HASH fibonacci_hash(INT_SIN SIN, INT_HASH num_buckets) {
 	return ((a * SIN % W)/((double)W/num_buckets)); // apply wizardry formula
 }
 
-int main() {
-	printf("%ld\n", trivial_hash(10, 8)); 
-	printf("%ld\n", pearson_hash(10, 8));
-	printf("%ld\n", fibonacci_hash(10, 8));
-	printf("%ld\n", fibonacci_hash(999999999, 8));
-	printf("%ld\n", fibonacci_hash(999999999, W)); // WHAT
-}
-
