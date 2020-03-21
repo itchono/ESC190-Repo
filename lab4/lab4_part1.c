@@ -3,6 +3,8 @@
 #include <time.h>
 
 INT_HASH trivial_hash(INT_SIN SIN, INT_HASH num_buckets) {
+
+	// WORKING
 	/**
 	   return the hash of SIN scaled to num_buckets
 	   
@@ -17,6 +19,8 @@ INT_HASH trivial_hash(INT_SIN SIN, INT_HASH num_buckets) {
 
 
 INT_HASH pearson_hash(INT_SIN SIN, INT_HASH num_buckets) {
+
+	// WORKING
 	/**
 	   return the hash of SIN scaled to num_buckets
 
@@ -44,6 +48,8 @@ INT_HASH pearson_hash(INT_SIN SIN, INT_HASH num_buckets) {
 
 
 INT_HASH fibonacci_hash(INT_SIN SIN, INT_HASH num_buckets) {
+
+	// WORKING
 	/**
 	return the hash of SIN scaled to num_buckets
 

@@ -3,6 +3,8 @@
 #define NUM_HASH_FUNCS 3
 
 HashTable *create_hash_table(int m, int mode){
+
+	// READY TO TEST
 /**
     create a new hash table of size 2^m and return the pointer to the newly created table.
     Fully initialize the state of the table.
@@ -48,6 +50,9 @@ HashTable *create_hash_table(int m, int mode){
 }
 
 void update_without_resize(PersonalData * data, HashTable *table) {
+
+
+	// READY TO TEST
 	/**
 	Insert/update the data corresponding to SIN of data.
 	Update all book-keeping information.
@@ -61,75 +66,137 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 
 	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
 
-	if(table->buckets[k]) {
+	if (lookup_key(data->SIN, table) == NULL) {
+		// create new entry
+		if(table->buckets[k]) {
+			switch (table->mode)
+			{
+			case 0:
+				// linked list push
+
+				Node* oldhead = table->buckets[k];
+				table->buckets[k] = malloc(sizeof(Node));
+				table->buckets[k]->next = oldhead;
+				table->buckets[k]->value = data; // new node
+				table->num_keys++;
+				break;
+
+			case 1:
+				// linear probe
+				while (table->buckets[k]) {
+					k++;
+				}
+				// now we have a bucket
+
+				table->buckets[k] = malloc(sizeof(Node));
+				table->buckets[k]->next = NULL;
+				table->buckets[k]->value = data; // new node
+				table->num_keys++;
+				break;
+
+			case 2:
+				int i = 1;
+
+				while(table->buckets[k]) {
+					k += (int) pow(i, 2);
+					i++;
+				}
+				// now we have a bucket
+				table->buckets[k] = malloc(sizeof(Node));
+				table->buckets[k]->next = NULL;
+				table->buckets[k]->value = data; // new node
+				table->num_keys++;
+				break;
+
+			case 3:
+				// cuckoo
+				while (table->buckets[k]) {
+					k++;
+				}
+				// now we have a bucket
+
+				table->buckets[k] = malloc(sizeof(Node));
+				table->buckets[k]->next = NULL;
+				table->buckets[k]->value = data; // new node
+				table->num_keys++;
+				break;
+			
+			default:
+				break;
+			}
+
+		} else{
+			// if it's a new table
+			table->buckets[k] = malloc(sizeof(Node));
+			table->buckets[k]->next = NULL;
+			table->buckets[k]->value = data; // new node
+			table->num_keys++;
+		}
+	}
+	else {
+		// update key in table
 		switch (table->mode)
 		{
 		case 0:
 			// linked list push
-
-			Node* oldhead = table->buckets[k];
-			table->buckets[k] = malloc(sizeof(Node));
-			table->buckets[k]->next = oldhead;
-			table->buckets[k]->value = data; // new node
-			table->num_keys++;
+			Node* currNode = table->buckets[k];
+			if (currNode) {
+				while (currNode->next) {
+					if(currNode->value->SIN == data->SIN) {
+						PersonalData* v = currNode->value;
+						currNode->value = data;
+						free(v);
+					}
+					currNode = currNode->next;
+				}
+			}
+			
+			return NULL;
 			break;
 
 		case 1:
 			// linear probe
 			while (table->buckets[k]) {
+				if (table->buckets[k]->value->SIN == data->SIN) {
+					PersonalData* v = table->buckets[k]->value;
+					table->buckets[k]->value = data;
+					free(v);
+				}
 				k++;
 			}
-			// now we have a bucket
-
-			table->buckets[k] = malloc(sizeof(Node));
-			table->buckets[k]->next = NULL;
-			table->buckets[k]->value = data; // new node
-			table->num_keys++;
+			return NULL;
 			break;
 
 		case 2:
 			int i = 1;
 
 			while(table->buckets[k]) {
+				if (table->buckets[k]->value->SIN == data->SIN) {
+					PersonalData* v = table->buckets[k]->value;
+					table->buckets[k]->value = data;
+					free(v);
+				}
 				k += (int) pow(i, 2);
 				i++;
 			}
-			// now we have a bucket
-			table->buckets[k] = malloc(sizeof(Node));
-			table->buckets[k]->next = NULL;
-			table->buckets[k]->value = data; // new node
-			table->num_keys++;
+			return NULL;
 			break;
 
 		case 3:
 			// cuckoo
-			while (table->buckets[k]) {
-				k++;
-			}
-			// now we have a bucket
-
-			table->buckets[k] = malloc(sizeof(Node));
-			table->buckets[k]->next = NULL;
-			table->buckets[k]->value = data; // new node
-			table->num_keys++;
-			break;
 			break;
 		
 		default:
 			break;
 		}
 
-	} else{
-		// if it's a new table
-		table->buckets[k] = malloc(sizeof(Node));
-		table->buckets[k]->next = NULL;
-		table->buckets[k]->value = data; // new node
-		table->num_keys++;
 	}
 
 }
 
 void update_key(PersonalData * data, HashTable **table){
+
+	// IPR
 	/** 
 	Using update_without_resize and resize_table,
 	update the hash table while ensuring the final table's 
@@ -176,12 +243,21 @@ void update_key(PersonalData * data, HashTable **table){
 	Bucket   6:     
 	Bucket   7:     
 	**/
+
+	float lf = (*table)->num_keys / (*table)->num_buckets;
+	float newLF = ((*table)->num_keys+1) / (*table)->num_buckets;
+
+	if (newLF > MAX_LOAD_FACTOR) {
+		*table = resize_table(table);
+	}
 	
 	
 
 }
 
 int delete_key(INT_SIN SIN, HashTable *table){
+
+	// READY TO TEST
 /**
 	Delete key value, return 1 if successful,
 	0 if key not in table - update book-keeping information.
@@ -209,10 +285,89 @@ int delete_key(INT_SIN SIN, HashTable *table){
 	Bucket 7:  
 	
 **/
+	hash_funcs[0] = trivial_hash;
+    hash_funcs[1] = pearson_hash;
+    hash_funcs[2] = fibonacci_hash;
+
+	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
+
+	switch (table->mode)
+	{
+	case 0:
+		// linked list push
+		Node* currNode = table->buckets[k];
+		Node* prev = NULL;
+		while (currNode->next) {
+			if(currNode->value->SIN == SIN) {
+
+				prev->next = currNode->next;
+				free(currNode->value);
+				free(currNode);
+				table->num_keys--;
+				return 1;
+
+				return currNode->value;
+			}
+			prev = currNode;
+			currNode = currNode->next;
+		}
+
+		if (!currNode->next && currNode){
+			// just the node exists
+			free(table->buckets[k]->value);
+			free(table->buckets[k]);
+			table->buckets[k] = NULL;
+			table->num_keys--;
+			return 1;
+		}
+		return NULL;
+		break;
+
+	case 1:
+		// linear probe
+		while (table->buckets[k]) {
+			if (table->buckets[k]->value->SIN == SIN) {
+				free(table->buckets[k]->value);
+				free(table->buckets[k]);
+				table->buckets[k] = NULL;
+				table->num_keys--;
+				return 1;
+			}
+			k++;
+		}
+		return 0;
+		break;
+
+	case 2:
+		int i = 1;
+
+		while(table->buckets[k]) {
+			if (table->buckets[k]->value->SIN == SIN) {
+				free(table->buckets[k]->value);
+				free(table->buckets[k]);
+				table->buckets[k] = NULL;
+				return 1;
+			}
+			k += (int) pow(i, 2);
+			i++;
+		}
+		return 0;
+		break;
+
+	case 3:
+		// cuckoo
+		break;
+	
+	default:
+		break;
+	}
+
 	
 }
 
 PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
+
+	// READY TO TEST
 	/** 
 	return pointer to the PersonalData struct associated with SIN.
 	return NULL if the SIN is not in table.
@@ -243,10 +398,15 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	case 0:
 		// linked list push
 		Node* currNode = table->buckets[k];
-		while (currNode->next) {
-			if(currNode->)
-			currNode = currNode->next;
+		if (currNode) {
+			while (currNode->next) {
+				if(currNode->value->SIN == SIN) {
+					return currNode->value;
+				}
+				currNode = currNode->next;
+			}
 		}
+		
 		return NULL;
 		break;
 
@@ -280,9 +440,12 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	
 	default:
 		break;
+	}
 }
 
 void delete_table(HashTable *table){
+
+	// READY TO TEST
 	/**
 	Delete the table and ensure no memory leaks. Do NOT free memory that you 
 	did not allocate.
@@ -294,13 +457,17 @@ void delete_table(HashTable *table){
 
 	if (mode == 0) {
 		// go to linked lists and PURGE
-
 		for (int x = 0; x < table->num_buckets; x++) {
 			if (table->buckets[x]) {
-
+				Node* currNode = table->buckets[k];
+				while (currNode->next) {
+					Node* n = currNode->next;
+					free(currNode->value);
+					free(currNode);
+					currNode = n;
+				}
 			}
 		}
-
 
 	}
 	else if (mode == 1 || mode || 2) {
@@ -314,7 +481,6 @@ void delete_table(HashTable *table){
 			
 		}
 	}
-
 	free(table->buckets); // delete the array of pointers to nodes
 	free(table);
 
