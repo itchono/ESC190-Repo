@@ -289,7 +289,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
-	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
+	int k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
 
 	switch (table->mode)
 	{
@@ -391,7 +391,7 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
-	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
+	int k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
 
 	switch (table->mode)
 	{
@@ -455,11 +455,11 @@ void delete_table(HashTable *table){
 	delete_table(table);
 	**/
 
-	if (mode == 0) {
+	if (table->mode == 0) {
 		// go to linked lists and PURGE
 		for (int x = 0; x < table->num_buckets; x++) {
 			if (table->buckets[x]) {
-				Node* currNode = table->buckets[k];
+				Node* currNode = table->buckets[x];
 				while (currNode->next) {
 					Node* n = currNode->next;
 					free(currNode->value);
@@ -470,7 +470,7 @@ void delete_table(HashTable *table){
 		}
 
 	}
-	else if (mode == 1 || mode || 2) {
+	else if (table->mode == 1 || table->mode == 2) {
 		// search through every bucket and PURGE
 
 		for (int x = 0; x < table->num_buckets; x++) {

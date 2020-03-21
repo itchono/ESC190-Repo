@@ -14,7 +14,7 @@ INT_HASH fibonacci_hash(INT_SIN SIN, INT_HASH num_buckets);
 INT_HASH (* hash_funcs[3])(INT_SIN SIN, INT_HASH num_buckets);
 
 HashTable* create_hash_table(int m, int mode);
-void update_key(PersonalData * data, HashTable *table);
+void update_key(PersonalData * data, HashTable **table);
 int delete_key(INT_SIN SIN, HashTable *table);
 PersonalData* lookup_key(INT_SIN SIN, HashTable *table);
 void delete_table(HashTable *table);
