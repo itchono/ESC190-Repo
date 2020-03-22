@@ -13,13 +13,23 @@ int test1(){
 	PersonalData data2 = (PersonalData) {2, 'M', "Bob", "Kim", "XXX", "YYY", 1999, 5, 12};
 	PersonalData data3 = (PersonalData) {9, 'F', "Eve", "Pooh", "XXX", "YYY", 1993, 4, 20};
 	HashTable* table = create_hash_table(3, LINEAR_PROBING);
+	
 	update_key(&data1, &table);
+	print_status(table);
+	print_buckets(table);
 	update_key(&data2, &table);
+	print_status(table);
+	print_buckets(table);
 	update_key(&data3, &table);
+	print_status(table);
+	print_buckets(table);
+	printf("ok\n");
 
 	if(table->buckets[0]->value->SIN != 9) pass = 0;
+	printf("ok\n");
 	if(table->buckets[6]->value->SIN != 1) pass = 0;
 	if(table->buckets[7]->value->SIN != 2) pass = 0;
+	
 	print_buckets(table);
 	delete_table(table);
 	printf("========== End of Test ==========\n");

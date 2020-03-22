@@ -67,6 +67,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 	INT_HASH k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
 
 	if (lookup_key(data->SIN, table) == NULL) {
+		//printf("new entry");
 		// create new entry
 		if(table->buckets[k]) {
 			switch (table->mode)
@@ -87,11 +88,12 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 					k++;
 				}
 				// now we have a bucket
-
-				table->buckets[k] = malloc(sizeof(Node));
-				table->buckets[k]->next = NULL;
-				table->buckets[k]->value = data; // new node
-				table->num_keys++;
+				if (k < table->num_buckets) {
+					table->buckets[k] = malloc(sizeof(Node));
+					table->buckets[k]->next = NULL;
+					table->buckets[k]->value = data; // new node
+					table->num_keys++;
+				} // else discard
 				break;
 
 			case 2:
@@ -103,10 +105,12 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 					i++;
 				}
 				// now we have a bucket
-				table->buckets[k] = malloc(sizeof(Node));
-				table->buckets[k]->next = NULL;
-				table->buckets[k]->value = data; // new node
-				table->num_keys++;
+				if (k < table->num_buckets) {
+					table->buckets[k] = malloc(sizeof(Node));
+					table->buckets[k]->next = NULL;
+					table->buckets[k]->value = data; // new node
+					table->num_keys++;
+				}
 				break;
 
 			case 3:
@@ -115,11 +119,12 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 					k++;
 				}
 				// now we have a bucket
-
-				table->buckets[k] = malloc(sizeof(Node));
-				table->buckets[k]->next = NULL;
-				table->buckets[k]->value = data; // new node
-				table->num_keys++;
+				if (k < table->num_buckets) {
+					table->buckets[k] = malloc(sizeof(Node));
+					table->buckets[k]->next = NULL;
+					table->buckets[k]->value = data; // new node
+					table->num_keys++;
+				}
 				break;
 			
 			default:
@@ -247,6 +252,28 @@ void update_key(PersonalData * data, HashTable **table){
 		// if load factor is unacceptable and yet we are adding a new key
 		*table = resize_table(*table);
 	}
+
+	// other case: open addressing takes us to an uncharted place
+	/*
+	if ((*table)->mode > 0) {
+		INT_HASH k = (hash_funcs[(*table)->mode])(data->SIN, (*table)->num_buckets);
+		if ((*table)->mode == LINEAR_PROBING) {
+			while((*table)->buckets[k]) {
+				k ++;
+			}
+		}
+		else if ((*table)->mode == QUADRATIC_PROBING) {
+			int i = 1;
+
+			while((*table)->buckets[k]) {
+				k += (int) pow(i, 2);
+				i++;
+			}
+		}
+
+		if (k >= (*table)->num_buckets) *table = resize_table(*table);
+	}
+	*/
 	
 	update_without_resize(data, *table);
 }
@@ -518,6 +545,7 @@ HashTable *resize_table(HashTable *table){
 		while (bucket != NULL){
 			if (bucket->value != NULL) {
 				update_without_resize(bucket->value, t2);
+
 			}
 			bucket = bucket->next;
 		}

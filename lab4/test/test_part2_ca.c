@@ -190,7 +190,6 @@ int test_resize_table(){
 	table->num_keys = 0; // suppress resizing by update_key
 print_buckets(table);
 	update_key(&data_5, &table);
-	printf("ok");
 	table->num_keys = 0; // suppress resizing by update_key
 print_buckets(table);
 	update_key(&data_9, &table);
