@@ -22,12 +22,14 @@ int test_update_key_1(){
 	PersonalData data_b = {1, 'M', "Bob","Xu","XXX", "YYY", 1994, 12, 12};
 	PersonalData data_c = {10, 'M', "Jeremy","Voyager","XXX", "YYY", 1994, 19, 12};
 
-
+	print_status(table);
 	update_key(&data_a, &table);
 	print_status(table);
+	print_buckets(table);
 	printf("\n");
 	update_key(&data_b, &table);
 	print_status(table);
+	print_buckets(table);
 	printf("\n");
 	update_key(&data_c, &table);
 	print_status(table);
@@ -188,6 +190,7 @@ int test_resize_table(){
 	table->num_keys = 0; // suppress resizing by update_key
 print_buckets(table);
 	update_key(&data_5, &table);
+	printf("ok");
 	table->num_keys = 0; // suppress resizing by update_key
 print_buckets(table);
 	update_key(&data_9, &table);
@@ -200,6 +203,7 @@ print_buckets(table);
 	table->num_keys = 0; // suppress resizing by update_key
 	update_key(&data_4, &table);
 	table->num_keys = 0; // suppress resizing by update_key
+	printf("OK!");
 
 	table->num_keys = 7; // assign the correct number of keys
 	

@@ -73,7 +73,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 			{
 			case 0:
 				// linked list push
-
+				;
 				Node* oldhead = table->buckets[k];
 				table->buckets[k] = malloc(sizeof(Node));
 				table->buckets[k]->next = oldhead;
@@ -95,6 +95,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 				break;
 
 			case 2:
+				;
 				int i = 1;
 
 				while(table->buckets[k]) {
@@ -138,6 +139,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 		switch (table->mode)
 		{
 		case 0:
+			;
 			// linked list push
 			Node* currNode = table->buckets[k];
 			if (currNode) {
@@ -150,8 +152,6 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 					currNode = currNode->next;
 				}
 			}
-			
-			return NULL;
 			break;
 
 		case 1:
@@ -164,10 +164,10 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 				}
 				k++;
 			}
-			return NULL;
 			break;
 
 		case 2:
+			;
 			int i = 1;
 
 			while(table->buckets[k]) {
@@ -179,7 +179,6 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 				k += (int) pow(i, 2);
 				i++;
 			}
-			return NULL;
 			break;
 
 		case 3:
@@ -244,15 +243,12 @@ void update_key(PersonalData * data, HashTable **table){
 	Bucket   7:     
 	**/
 
-	float lf = (*table)->num_keys / (*table)->num_buckets;
-	float newLF = ((*table)->num_keys+1) / (*table)->num_buckets;
-
-	if (newLF > MAX_LOAD_FACTOR) {
-		*table = resize_table(table);
+	if (((*table)->num_keys+1.0) / (*table)->num_buckets > MAX_LOAD_FACTOR && lookup_key(data->SIN, *table) == NULL) {
+		// if load factor is unacceptable and yet we are adding a new key
+		*table = resize_table(*table);
 	}
 	
-	
-
+	update_without_resize(data, *table);
 }
 
 int delete_key(INT_SIN SIN, HashTable *table){
@@ -289,24 +285,27 @@ int delete_key(INT_SIN SIN, HashTable *table){
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
+	// first confirm the key exists
+
+	if (!lookup_key(SIN, table)) return 0;
+
 	INT_HASH k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
 
 	switch (table->mode)
 	{
 	case 0:
 		// linked list push
+		;
 		Node* currNode = table->buckets[k];
 		Node* prev = NULL;
 		while (currNode->next) {
+			// LL mode
 			if(currNode->value->SIN == SIN) {
-
-				prev->next = currNode->next;
+				if(prev) prev->next = currNode->next;
 				free(currNode->value);
 				free(currNode);
 				table->num_keys--;
 				return 1;
-
-				return currNode->value;
 			}
 			prev = currNode;
 			currNode = currNode->next;
@@ -320,7 +319,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
 			table->num_keys--;
 			return 1;
 		}
-		return NULL;
+		return 0;
 		break;
 
 	case 1:
@@ -339,6 +338,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
 		break;
 
 	case 2:
+		;
 		int i = 1;
 
 		while(table->buckets[k]) {
@@ -396,15 +396,15 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	switch (table->mode)
 	{
 	case 0:
-		// linked list push
+		;
 		Node* currNode = table->buckets[k];
 		if (currNode) {
-			while (currNode->next) {
+			do {
 				if(currNode->value->SIN == SIN) {
 					return currNode->value;
 				}
 				currNode = currNode->next;
-			}
+			} while (currNode);
 		}
 		
 		return NULL;
@@ -422,6 +422,7 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 		break;
 
 	case 2:
+		;
 		int i = 1;
 
 		while(table->buckets[k]) {
@@ -506,18 +507,24 @@ HashTable *resize_table(HashTable *table){
 	Table load factor: 0.00 
 	**/
 
-	int n2 = table->num_buckets * 2;
+	INT_HASH n2 = table->num_buckets * 2;
 
-	HashTable* t2 = create_hash_table(n2, table->mode);
+	HashTable* t2 = create_hash_table(log2(n2), table->mode);
 
-	for (int x = 0; x < table->num_buckets; x++) {
-		// need to rehash all keys
+	for (INT_HASH b = 0; b < table->num_buckets; b++){ 
+		// similar to utilities code
+		Node * bucket = table->buckets[b];
 
-		
+		while (bucket != NULL){
+			if (bucket->value != NULL) {
+				update_without_resize(bucket->value, t2);
+			}
+			bucket = bucket->next;
+		}
 	}
 
+	delete_table(table);
 
-
-
+	return t2;
 	
 }
