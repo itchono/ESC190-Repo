@@ -70,6 +70,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 		//printf("new entry");
 		// create new entry
 		if(table->buckets[k]) {
+			int i = 0;
 			switch (table->mode)
 			{
 			case 0:
@@ -83,32 +84,30 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 				break;
 
 			case 1:
+				;
 				// linear probe
-				while (table->buckets[k]) {
-					k++;
+				while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+					i++;
 				}
 				// now we have a bucket
-				if (k < table->num_buckets) {
-					table->buckets[k] = malloc(sizeof(Node));
-					table->buckets[k]->next = NULL;
-					table->buckets[k]->value = data; // new node
+				if (i < table->num_buckets) {
+					table->buckets[(k+i)%table->num_buckets] = malloc(sizeof(Node));
+					table->buckets[(k+i)%table->num_buckets]->next = NULL;
+					table->buckets[(k+i)%table->num_buckets]->value = data; // new node
 					table->num_keys++;
 				} // else discard
 				break;
 
 			case 2:
 				;
-				int i = 1;
-
-				while(table->buckets[k]) {
-					k += (int) pow(i, 2);
+				while(table->buckets[(k+(int)pow(i,2))%table->num_buckets] && i < table->num_buckets) {
 					i++;
 				}
 				// now we have a bucket
 				if (k < table->num_buckets) {
-					table->buckets[k] = malloc(sizeof(Node));
-					table->buckets[k]->next = NULL;
-					table->buckets[k]->value = data; // new node
+					table->buckets[(k+(int)pow(i,2))%table->num_buckets] = malloc(sizeof(Node));
+					table->buckets[(k+(int)pow(i,2))%table->num_buckets]->next = NULL;
+					table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value = data; // new node
 					table->num_keys++;
 				}
 				break;
@@ -141,6 +140,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 	}
 	else {
 		// update key in table
+		int i = 0;
 		switch (table->mode)
 		{
 		case 0:
@@ -161,27 +161,25 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 
 		case 1:
 			// linear probe
-			while (table->buckets[k]) {
-				if (table->buckets[k]->value->SIN == data->SIN) {
-					PersonalData* v = table->buckets[k]->value;
-					table->buckets[k]->value = data;
+			;
+			while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+				if (table->buckets[(k+i)%table->num_buckets]->value->SIN == data->SIN) {
+					PersonalData* v = table->buckets[(k+i)%table->num_buckets]->value;
+					table->buckets[(k+i)%table->num_buckets]->value = data;
 					free(v);
 				}
-				k++;
+				i++;
 			}
 			break;
 
 		case 2:
 			;
-			int i = 1;
-
-			while(table->buckets[k]) {
-				if (table->buckets[k]->value->SIN == data->SIN) {
-					PersonalData* v = table->buckets[k]->value;
-					table->buckets[k]->value = data;
+			while (table->buckets[(k+(int)pow(i,2))%table->num_buckets] && i < table->num_buckets) {
+				if (table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == data->SIN) {
+					PersonalData* v = table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value;
+					table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value = data;
 					free(v);
 				}
-				k += (int) pow(i, 2);
 				i++;
 			}
 			break;
@@ -238,42 +236,20 @@ void update_key(PersonalData * data, HashTable **table){
 	Bucket 6:     
 	Bucket 7:   
 	
-	Bucket   0:     
-	Bucket   1:     SIN:    2 
-	Bucket   2:     SIN:    7 
+	Bucket   0:     SIN:    10 
+	Bucket   1:     
+	Bucket   2:     
 	Bucket   3:     
 	Bucket   4:      
-	Bucket   5:     SIN:    10 
-	Bucket   6:     
-	Bucket   7:     
+	Bucket   5:     
+	Bucket   6:     SIN:    2 
+	Bucket   7:     SIN:    7 
 	**/
 
 	if (((*table)->num_keys+1.0) / (*table)->num_buckets > MAX_LOAD_FACTOR && lookup_key(data->SIN, *table) == NULL) {
 		// if load factor is unacceptable and yet we are adding a new key
 		*table = resize_table(*table);
 	}
-
-	// other case: open addressing takes us to an uncharted place
-	/*
-	if ((*table)->mode > 0) {
-		INT_HASH k = (hash_funcs[(*table)->mode])(data->SIN, (*table)->num_buckets);
-		if ((*table)->mode == LINEAR_PROBING) {
-			while((*table)->buckets[k]) {
-				k ++;
-			}
-		}
-		else if ((*table)->mode == QUADRATIC_PROBING) {
-			int i = 1;
-
-			while((*table)->buckets[k]) {
-				k += (int) pow(i, 2);
-				i++;
-			}
-		}
-
-		if (k >= (*table)->num_buckets) *table = resize_table(*table);
-	}
-	*/
 	
 	update_without_resize(data, *table);
 }
@@ -285,6 +261,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
 	Delete key value, return 1 if successful,
 	0 if key not in table - update book-keeping information.
 	Ensure no memory leaks. Do not free memory that you did not allocate.
+	// i.e. do not freaking free the value pointers
 
 	Sample IO
 	HashTable * table = create_hash_table(1, CLOSED_ADDRESSING);
@@ -318,6 +295,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
 
 	INT_HASH k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
 
+	int i = 0;
 	switch (table->mode)
 	{
 	case 0:
@@ -329,7 +307,6 @@ int delete_key(INT_SIN SIN, HashTable *table){
 			// LL mode
 			if(currNode->value->SIN == SIN) {
 				if(prev) prev->next = currNode->next;
-				free(currNode->value);
 				free(currNode);
 				table->num_keys--;
 				return 1;
@@ -340,7 +317,6 @@ int delete_key(INT_SIN SIN, HashTable *table){
 
 		if (!currNode->next && currNode){
 			// just the node exists
-			free(table->buckets[k]->value);
 			free(table->buckets[k]);
 			table->buckets[k] = NULL;
 			table->num_keys--;
@@ -351,31 +327,28 @@ int delete_key(INT_SIN SIN, HashTable *table){
 
 	case 1:
 		// linear probe
-		while (table->buckets[k]) {
-			if (table->buckets[k]->value->SIN == SIN) {
-				free(table->buckets[k]->value);
-				free(table->buckets[k]);
-				table->buckets[k] = NULL;
+		;
+		while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+			if (table->buckets[(k+i)%table->num_buckets]->value->SIN == SIN) {
+				free(table->buckets[(k+i)%table->num_buckets]);
+				table->buckets[(k+i)%table->num_buckets] = NULL;
 				table->num_keys--;
 				return 1;
 			}
-			k++;
+			i++;
 		}
 		return 0;
 		break;
 
 	case 2:
 		;
-		int i = 1;
 
-		while(table->buckets[k]) {
-			if (table->buckets[k]->value->SIN == SIN) {
-				free(table->buckets[k]->value);
-				free(table->buckets[k]);
-				table->buckets[k] = NULL;
+		while(table->buckets[(k+(int)pow(i,2))%table->num_buckets] && i < table->num_buckets) {
+			if (table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == SIN) {
+				free(table->buckets[(k+(int)pow(i,2))%table->num_buckets]);
+				table->buckets[(k+(int)pow(i,2))%table->num_buckets] = NULL;
 				return 1;
 			}
-			k += (int) pow(i, 2);
 			i++;
 		}
 		return 0;
@@ -419,7 +392,7 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
     hash_funcs[2] = fibonacci_hash;
 
 	INT_HASH k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
-
+	int i = 0;
 	switch (table->mode)
 	{
 	case 0:
@@ -438,25 +411,26 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 		break;
 
 	case 1:
+		
+		;
 		// linear probe
-		while (table->buckets[k]) {
-			if (table->buckets[k]->value->SIN == SIN) {
-				return table->buckets[k]->value;
+
+		while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+			if (table->buckets[(k+i)%table->num_buckets]->value->SIN == SIN) {
+				return table->buckets[(k+i)%table->num_buckets]->value;
 			}
-			k++;
+			i++;
 		}
 		return NULL;
 		break;
 
 	case 2:
 		;
-		int i = 1;
 
-		while(table->buckets[k]) {
-			if (table->buckets[k]->value->SIN == SIN) {
-				return table->buckets[k]->value;
+		while(table->buckets[(k+(int)pow(i,2))%table->num_buckets] && i < table->num_buckets) {
+			if (table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == SIN) {
+				return table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value;
 			}
-			k += (int) pow(i, 2);
 			i++;
 		}
 		return NULL;
@@ -488,9 +462,8 @@ void delete_table(HashTable *table){
 		for (int x = 0; x < table->num_buckets; x++) {
 			if (table->buckets[x]) {
 				Node* currNode = table->buckets[x];
-				while (currNode->next) {
+				while (currNode) {
 					Node* n = currNode->next;
-					free(currNode->value);
 					free(currNode);
 					currNode = n;
 				}
@@ -499,11 +472,12 @@ void delete_table(HashTable *table){
 
 	}
 	else if (table->mode == 1 || table->mode == 2) {
+		// DO NOT FREE THE VALUE POINTERS
 		// search through every bucket and PURGE
 
 		for (int x = 0; x < table->num_buckets; x++) {
 			if (table->buckets[x]) {
-				free(table->buckets[x]->value); // get rid of the data in the node
+		
 				free(table->buckets[x]); // get rid of the thing stored there
 			}
 			
