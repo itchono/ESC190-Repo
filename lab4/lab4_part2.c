@@ -64,7 +64,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
-	int k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
+	INT_HASH k = (hash_funcs[table->mode])(data->SIN, table->num_buckets); // key to map to, based on mode
 
 	if (lookup_key(data->SIN, table) == NULL) {
 		// create new entry
@@ -289,7 +289,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
-	int k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
+	INT_HASH k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
 
 	switch (table->mode)
 	{
@@ -391,7 +391,7 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
     hash_funcs[1] = pearson_hash;
     hash_funcs[2] = fibonacci_hash;
 
-	int k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
+	INT_HASH k = (hash_funcs[table->mode])(SIN, table->num_buckets); // key to map to, based on mode
 
 	switch (table->mode)
 	{
