@@ -147,16 +147,14 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 			;
 			// linked list push
 			Node* currNode = table->buckets[k];
-			if (currNode) {
-				while (currNode->next) {
-					if(currNode->value->SIN == data->SIN) {
-						PersonalData* v = currNode->value;
-						currNode->value = data;
-						free(v);
-					}
-					currNode = currNode->next;
+			while (currNode) {
+				if(currNode->value->SIN == data->SIN) {
+					currNode->value = data;
+					printf("REPLACED %ld\n", data->SIN);
 				}
+				currNode = currNode->next;
 			}
+			
 			break;
 
 		case 1:
@@ -164,9 +162,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 			;
 			while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
 				if (table->buckets[(k+i)%table->num_buckets]->value->SIN == data->SIN) {
-					PersonalData* v = table->buckets[(k+i)%table->num_buckets]->value;
 					table->buckets[(k+i)%table->num_buckets]->value = data;
-					free(v);
 				}
 				i++;
 			}
@@ -176,9 +172,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 			;
 			while (table->buckets[(k+(int)pow(i,2))%table->num_buckets] && i < table->num_buckets) {
 				if (table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == data->SIN) {
-					PersonalData* v = table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value;
 					table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value = data;
-					free(v);
 				}
 				i++;
 			}
@@ -398,13 +392,11 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	case 0:
 		;
 		Node* currNode = table->buckets[k];
-		if (currNode) {
-			do {
-				if(currNode->value->SIN == SIN) {
-					return currNode->value;
-				}
-				currNode = currNode->next;
-			} while (currNode);
+		while (currNode) {
+			if(currNode->value->SIN == SIN) {
+				return currNode->value;
+			}
+			currNode = currNode->next;
 		}
 		
 		return NULL;

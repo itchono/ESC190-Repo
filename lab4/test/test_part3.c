@@ -5,9 +5,30 @@
 Testing part 3 of the lab (data loading)
 **/
 
+long int numLines2(char* fn) {
+    FILE* f = fopen(fn, "r");
+
+    long int linecount = 0;
+
+    char buffer[255];
+
+    while(fgets(buffer, 255, f) != NULL) {
+        linecount++;
+    }
+
+    fclose(f);
+    return linecount;
+}
+
 void test1(){
 	printf("===== Test 1: simple parse data test =====\n");
 	PersonalData** data = parse_data("test_data_LOAD.txt");
+
+	long int numEntries = numLines2("test_data_LOAD.txt") - 1;
+
+	for (int i = 0; i < numEntries; i++) {
+		free(data[i]);
+	}
 }
 
 void test2(){
@@ -32,6 +53,6 @@ void test3(){
 int main(){
 	test1();
 	test2();
-	test3();
+	//test3();
 	return 0;	
 }

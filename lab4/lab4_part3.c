@@ -26,8 +26,8 @@ PersonalData** parse_data(char* fn){
 
     FILE* fin = fopen(fn, "r");
 
-    int MAX_LINE_LENGTH = MAX_NAME_LEN*2 + BANK_ACC_LEN + PASSPORT_LEN + 9 + 10 + 1 + 5;
-    // name (1st and last) + bank# + passport# + SIN + dob + gender + 5 tabs
+    int MAX_LINE_LENGTH = MAX_NAME_LEN*2 + BANK_ACC_LEN + PASSPORT_LEN + 9 + 10 + 1 + 5 + 1 + 1;
+    // name (1st and last) + bank# + passport# + SIN + dob + gender + 5 tabs + name space + \0
 
     char buffer[MAX_LINE_LENGTH + 1]; // line buffer
 
@@ -74,6 +74,8 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
         update_key(loadP[i], &table);
     }
 
+    print_buckets(table);
+
     long int numUpdate = numLines(update) - 1;
 
     PersonalData** updP = parse_data(update);
@@ -81,6 +83,8 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
     for (long int i = 0; i < numUpdate; i++) {
         update_key(updP[i], &table);
     }
+
+    print_buckets(table);
 
 
     // real people
@@ -94,14 +98,32 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
 
     for (long int i = 0; i < numVal; i++) {
         PersonalData* check = lookup_key(valP[i]->SIN, table);
-        // check all fields
-        if (check == NULL) fprintf(fout, "%ld\n", valP[i]->SIN);
-        else {
-            int checkSum = strcmp(check->first_name, valP[i]->first_name) + strcmp(check->last_name, valP[i]->last_name) + strcmp(check->bank_acc_num, valP[i]->bank_acc_num) +
-                strcmp(check->passport_num, valP[i]->passport_num) + (check->gender - valP[i]->gender) + (check->dob_year - valP[i]->dob_year) + (check->dob_month - valP[i]->dob_month) + (check->dob_day - valP[i]->dob_day);
+        printf("\n\n");
+        print_personal_data(check);
+        printf("vs\n");
+        print_personal_data(valP[i]);
 
-            if (checkSum != 0) fprintf(fout, "%ld\n", valP[i]->SIN);
-        }
+        printf("firstname: %d\n", strcmp(check->first_name, valP[i]->first_name));
+        printf("lastname: %d\n", strcmp(check->last_name, valP[i]->last_name));
+        printf("bn: %d\n", strcmp(check->bank_acc_num, valP[i]->bank_acc_num));
+        printf("psp: %d\n", strcmp(check->passport_num, valP[i]->passport_num));
+        printf("gender: %d\n", check->gender - valP[i]->gender);
+        printf("y: %d\n", check->dob_year - valP[i]->dob_year);
+        printf("m: %d\n", check->dob_month - valP[i]->dob_month);
+        printf("d: %d\n", check->dob_day - valP[i]->dob_day );
+
+
+        // check all fields
+        if (check == NULL || 
+        strcmp(check->first_name, valP[i]->first_name) || 
+        strcmp(check->last_name, valP[i]->last_name) || 
+        strcmp(check->bank_acc_num, valP[i]->bank_acc_num) || 
+        strcmp(check->passport_num, valP[i]->passport_num) ||
+        (check->gender - valP[i]->gender) ||
+        (check->dob_year - valP[i]->dob_year) ||
+        (check->dob_month - valP[i]->dob_month) ||
+        (check->dob_day - valP[i]->dob_day)) fprintf(fout, "%ld\n", valP[i]->SIN);
+
     }
     fclose(fout);
 
