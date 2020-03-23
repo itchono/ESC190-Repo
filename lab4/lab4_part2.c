@@ -150,7 +150,6 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 			while (currNode) {
 				if(currNode->value->SIN == data->SIN) {
 					currNode->value = data;
-					printf("REPLACED %ld\n", data->SIN);
 				}
 				currNode = currNode->next;
 			}

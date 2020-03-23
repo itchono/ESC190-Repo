@@ -74,7 +74,6 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
         update_key(loadP[i], &table);
     }
 
-    print_buckets(table);
 
     long int numUpdate = numLines(update) - 1;
 
@@ -84,7 +83,6 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
         update_key(updP[i], &table);
     }
 
-    print_buckets(table);
 
 
     // real people
@@ -98,20 +96,6 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
 
     for (long int i = 0; i < numVal; i++) {
         PersonalData* check = lookup_key(valP[i]->SIN, table);
-        printf("\n\n");
-        print_personal_data(check);
-        printf("vs\n");
-        print_personal_data(valP[i]);
-
-        printf("firstname: %d\n", strcmp(check->first_name, valP[i]->first_name));
-        printf("lastname: %d\n", strcmp(check->last_name, valP[i]->last_name));
-        printf("bn: %d\n", strcmp(check->bank_acc_num, valP[i]->bank_acc_num));
-        printf("psp: %d\n", strcmp(check->passport_num, valP[i]->passport_num));
-        printf("gender: %d\n", check->gender - valP[i]->gender);
-        printf("y: %d\n", check->dob_year - valP[i]->dob_year);
-        printf("m: %d\n", check->dob_month - valP[i]->dob_month);
-        printf("d: %d\n", check->dob_day - valP[i]->dob_day );
-
 
         // check all fields
         if (check == NULL || 
