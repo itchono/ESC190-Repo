@@ -82,9 +82,6 @@ void counter_intelligence(char* load, char* update, char* validate, char* outfil
     for (long int i = 0; i < numUpdate; i++) {
         update_key(updP[i], &table);
     }
-
-
-
     // real people
 
     long int numVal = numLines(validate) - 1;

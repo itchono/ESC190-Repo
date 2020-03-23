@@ -29,6 +29,8 @@ void test1(){
 	for (int i = 0; i < numEntries; i++) {
 		free(data[i]);
 	}
+
+	free(data);
 }
 
 void test2(){

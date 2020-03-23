@@ -114,16 +114,17 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 
 			case 3:
 				// cuckoo
-				while (table->buckets[k]) {
-					k++;
+				// linear probe
+				while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+					i++;
 				}
 				// now we have a bucket
-				if (k < table->num_buckets) {
-					table->buckets[k] = malloc(sizeof(Node));
-					table->buckets[k]->next = NULL;
-					table->buckets[k]->value = data; // new node
+				if (i < table->num_buckets) {
+					table->buckets[(k+i)%table->num_buckets] = malloc(sizeof(Node));
+					table->buckets[(k+i)%table->num_buckets]->next = NULL;
+					table->buckets[(k+i)%table->num_buckets]->value = data; // new node
 					table->num_keys++;
-				}
+				} // else discard
 				break;
 			
 			default:
@@ -179,6 +180,14 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 
 		case 3:
 			// cuckoo
+			// linear probe
+			;
+			while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+				if (table->buckets[(k+i)%table->num_buckets]->value->SIN == data->SIN) {
+					table->buckets[(k+i)%table->num_buckets]->value = data;
+				}
+				i++;
+			}
 			break;
 		
 		default:
@@ -348,7 +357,18 @@ int delete_key(INT_SIN SIN, HashTable *table){
 		break;
 
 	case 3:
-		// cuckoo
+		// linear probe
+		;
+		while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
+			if (table->buckets[(k+i)%table->num_buckets]->value->SIN == SIN) {
+				free(table->buckets[(k+i)%table->num_buckets]);
+				table->buckets[(k+i)%table->num_buckets] = NULL;
+				table->num_keys--;
+				return 1;
+			}
+			i++;
+		}
+		return 0;
 		break;
 	
 	default:
