@@ -470,7 +470,7 @@ void delete_table(HashTable *table){
 
 	if (table->mode == 0) {
 		// go to linked lists and PURGE
-		for (int x = 0; x < table->num_buckets; x++) {
+		for (INT_HASH x = 0; x < table->num_buckets; x++) {
 			if (table->buckets[x]) {
 				Node* currNode = table->buckets[x];
 				while (currNode) {
@@ -486,7 +486,7 @@ void delete_table(HashTable *table){
 		// DO NOT FREE THE VALUE POINTERS
 		// search through every bucket and PURGE
 
-		for (int x = 0; x < table->num_buckets; x++) {
+		for (INT_HASH x = 0; x < table->num_buckets; x++) {
 			if (table->buckets[x]) {
 		
 				free(table->buckets[x]); // get rid of the thing stored there
