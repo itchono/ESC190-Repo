@@ -47,6 +47,7 @@ HashTable *create_hash_table(int m, int mode){
 	ht->num_keys = 0;
 	ht->buckets = calloc(ht->num_buckets, sizeof(Node*)); // fully initialized
 
+	return ht;
 }
 
 void update_without_resize(PersonalData * data, HashTable *table) {
