@@ -50,23 +50,6 @@ HashTable *create_hash_table(int m, int mode){
 
 		hash_table->buckets = calloc(hash_table->num_buckets, sizeof(Node*));
 
-		hash_table->buckets = malloc(hash_table->num_buckets * sizeof(Node*))
-
-	
-
-
-		/*
-
-		buckets (Node **) ----> [Node* --> <value, next>
-								Node* --> <value, next>
-								Node*
-								Node*
-								Node*
-								Node*]
-
-		*/
-
-		// XOR operator
 
 
 	for(int i=0; i <= num_buckets; i++){
@@ -83,15 +66,96 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 	Insert/update the data corresponding to SIN of data.
 	Update all book-keeping information.
 	**/
-	while(data){
-    	table[SIN] -> first_name;
-		table[SIN] -> last_name;
-		table[SIN] -> passport_num;
-		table[SIN] -> bank_acc_num;
-		table[SIN] -> dob_year;
-		table[SIN] -> dob_month;
-		table[SIN] -> dob_day;}
+
+	// table[SIN] --> NODE
+
+	// Chaining  0
+
+	// Linear probing  1
+
+	// Quadratic Probing  2
+
+	// mode 
+
+	// Cuckoo Hashing
+
+	hash_funcs[0] = trivial_hash;
+    hash_funcs[1] = pearson_hash;
+    hash_funcs[2] = fibonacci_hash;
+
+	// mode = 0;
+
+	INT_HASH b = (hash_funcs[table->mode])(data->SIN, table->buckets);
+
+	// 201
+
+	// Someone's already there!
+
+	/*
+
+	F: 20010920 --> 201
+
+	F {
+		Temporary Room In Mind of where I might be
 	}
+	
+	20011016 --> NULL
+
+	20010920 --> ME
+
+	Room 201: [PERSON:20010101]Door[ME:20010920]Door[]
+
+	*/
+
+	/*
+
+	Linear Probing
+
+	20010920
+
+	--> 002 = i
+
+	p = 0
+
+	5
+
+	001: []  (p = 4) + i --> 001
+	002: [P] (p = 0) + i --> 002
+	003: [P] (p = 1) + i --> 003
+	004: [P] (p = 2) + i --> 004
+	005: [P] (p = 3) + i --> %(number of buckets)
+
+	*/
+
+	/*
+
+	20010920
+
+	002
+
+	002: [P] i=2 + p=0^2
+
+	003: [P] i=2 + p=1^2
+
+	006: [P] i=2 + p=2^2
+
+	p = (number of rooms)
+
+	for (int p = 0; p < table->num_buckets; p++)
+
+	011: [ME]
+
+	018 <- ???
+
+	018 % (15) --> 
+
+
+	*/
+
+
+
+	table->buckets[b] -> value = data;
+
 }
 
 void update_key(PersonalData * data, HashTable **table){
@@ -141,8 +205,21 @@ void update_key(PersonalData * data, HashTable **table){
 	Bucket   6:     
 	Bucket   7:     
 	**/
-	table = realoc(sizeof(data));
-	while(data){}
+	
+	
+	// if the new LF > MAX_LF
+
+	// then we need to resize
+
+
+	float new_LF = (float)(*table)->num_keys+1/(*table)->num_buckets;
+
+	// ONLY IF WE are adding key
+
+	// 1: update only
+
+	// 2: add key
+	
 
 	
 
@@ -176,24 +253,65 @@ int delete_key(INT_SIN SIN, HashTable *table){
 	Bucket 7:  
 	
 **/
-struct Node *next;
-	Node *curr_node, *prev_node = NULL;
-	for(curr_node = table -> PersonalData[SIN];
-		curr_node != NULL && curr_node -> SIN;
-		prev_node = curr_node, curr_node = curr_node -> next);
-		
-	if(!curr_node){}
-		return 0;//doesn't exist
+	hash_funcs[0] = trivial_hash;
+    hash_funcs[1] = pearson_hash;
+    hash_funcs[2] = fibonacci_hash;
+
+	// mode = 0;
+
+	INT_HASH b = (hash_funcs[table->mode])(data->SIN, table->buckets);
+
+	switch(table->mode) {
+		case 0:
+		// chaining
+		;
+		Node * bucket = table->buckets[b];
+		while (bucket != NULL){
+			if (bucket->value->SIN == SIN) {
+				return bucket->value;
+			}
+			bucket = bucket->next;
+		}
+
+		return 0;
+		break;
+
+		case 1:
+		// linear
+		;
+		int p1 = 0;
+		while (p1 < table->num_buckets) {
+			int index = (b + p1) % table->num_buckets; // which bucket we're accessing
+
+			if(table->buckets[index] && table->buckets[index]->value->SIN == SIN ){
+				free(table->buckets[index]);
+				table->num_keys--;
+				return 1;
+			}
+
+			p1++;
+		}
+		return 0;
+		break;
+
+		case 2:
+		// quad
+		int p2 = 0;
+		while (p2 < table->num_buckets) {
+			int index = (b + pow(p2,2)) % table->num_buckets; // which bucket we're accessing
+
+			if(table->buckets[index] && table->buckets[index]->value->SIN == SIN ){
+				free(table->buckets[index]);
+				table->num_keys--;
+				return 1;
+			}
+
+			p2++;
+		}
+		return 0;
+
+		break;
 	}
-	if(!prev_node){
-		table -> PersonalData[SIN] = table -> PersonalData[SIN] -> next;
-	}
-	else{
-		prev_node -> next = curr_node -> next;
-		return 1;
-	}
-	free(prev_node);
-	free(curr_node);
 }
 
 PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
@@ -215,7 +333,61 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	Bank account #:		99999-999-999999999999 
 	Date of birth:		12-31-1960 
 	**/
-	if(SIN)
+	hash_funcs[0] = trivial_hash;
+    hash_funcs[1] = pearson_hash;
+    hash_funcs[2] = fibonacci_hash;
+
+	// mode = 0;
+
+	INT_HASH b = (hash_funcs[table->mode])(data->SIN, table->buckets);
+
+	switch(table->mode) {
+		case 0:
+		// chaining
+		;
+		Node * bucket = table->buckets[b];
+		while (bucket != NULL){
+			if (bucket->value->SIN == SIN) {
+				return bucket->value;
+			}
+			bucket = bucket->next;
+		}
+
+		return NULL;
+		break;
+
+		case 1:
+		// linear
+		;
+		int p1 = 0;
+		while (p1 < table->num_buckets) {
+			int index = (b + p1) % table->num_buckets; // which bucket we're accessing
+
+			if(table->buckets[index] && table->buckets[index]->value->SIN == SIN ){
+				return table->buckets[index]->value;
+			}
+
+			p1++;
+		}
+		return NULL;
+		break;
+
+		case 2:
+		// quad
+		int p2 = 0;
+		while (p2 < table->num_buckets) {
+			int index = (b + pow(p2,2)) % table->num_buckets; // which bucket we're accessing
+
+			if(table->buckets[index] && table->buckets[index]->value->SIN == SIN ){
+				return table->buckets[index]->value;
+			}
+
+			p2++;
+		}
+		return NULL;
+
+		break;
+	}
 }
 
 void delete_table(HashTable *table){
@@ -227,22 +399,21 @@ void delete_table(HashTable *table){
 	HashTable * table = create_hash_table(1, CLOSED_ADDRESSING);
 	delete_table(table);
 	**/
-	Node *temp_head;
-		for(int i = 0; i < table -> num_buckets; i++){
-			while(table -> buckets[i]){
-				temp_head = table -> buckets[i];
-				table -> buckets[i] = temp_head -> next;
-				free(temp_head)
-			}
+	for (INT_HASH b = 0; b < table->num_buckets; b++){ 
+		Node * bucket = table->buckets[b];
+		while (bucket != NULL){
+			free(bucket);
+			bucket = bucket->next;
 		}
-		free(table -> buckets);
-		free(table -> num_buckets);
-		free(table);
+	}
+
+	free(table->buckets);
+	free(table);
 }
 
 HashTable *resize_table(HashTable *table){
 	/**
-	Return a pointer to a new table with size m+1, where 
+	Return a pointer to a new table with size 2^(m+1), where 
 	the original table "table" has size 2^m.
 	Delete the original table, ensure no memory leaks. 
 	Update all book-keeping information.
@@ -257,9 +428,20 @@ HashTable *resize_table(HashTable *table){
 	Table load:        0 
 	Table load factor: 0.00 
 	**/
-HashTable* new_table = malloc(sizeof(table+1));
-	pointer -> new_table;
-	update_key(new_table);
+	
+	int m = log2(2*table->num_buckets);
+
+	HashTable* newTable = create_hash_table(m, table->mode);
+
+	for (INT_HASH b = 0; b < table->num_buckets; b++){ 
+		Node * bucket = table->buckets[b];
+		while (bucket != NULL){
+			if (bucket->value == NULL);
+			else update_without_resize(bucket->value, newTable);
+			bucket = bucket->next;
+		}
+	}
+
 	delete_table(table);
-	return pointer;
+	return newTable;
 }

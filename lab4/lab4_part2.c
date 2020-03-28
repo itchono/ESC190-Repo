@@ -310,6 +310,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
 			// LL mode
 			if(currNode->value->SIN == SIN) {
 				if(prev) prev->next = currNode->next;
+				else table->buckets[k] = currNode->next;
 				free(currNode);
 				table->num_keys--;
 				return 1;
@@ -427,8 +428,8 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 		;
 		// linear probe
 
-		while (table->buckets[(k+i)%table->num_buckets] && i < table->num_buckets) {
-			if (table->buckets[(k+i)%table->num_buckets]->value->SIN == SIN) {
+		while (i < table->num_buckets) {
+			if (table->buckets[(k+i)%table->num_buckets] && table->buckets[(k+i)%table->num_buckets]->value->SIN == SIN) {
 				return table->buckets[(k+i)%table->num_buckets]->value;
 			}
 			i++;
@@ -439,8 +440,8 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 	case 2:
 		;
 
-		while(table->buckets[(k+(int)pow(i,2))%table->num_buckets] && i < table->num_buckets) {
-			if (table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == SIN) {
+		while(i < table->num_buckets) {
+			if (table->buckets[(k+(int)pow(i,2))%table->num_buckets] && table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == SIN) {
 				return table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value;
 			}
 			i++;
@@ -450,6 +451,12 @@ PersonalData* lookup_key(INT_SIN SIN, HashTable *table){
 
 	case 3:
 		// cuckoo
+		// done?
+		for (INT_HASH b = 0; b < table->num_buckets; b++){ 
+			if(table->buckets[b] && table->buckets[b]->value->SIN == SIN){
+				return table->buckets[b]->value;
+			}
+		}
 		break;
 	
 	default:
@@ -520,9 +527,7 @@ HashTable *resize_table(HashTable *table){
 	Table load factor: 0.00 
 	**/
 
-	INT_HASH n2 = table->num_buckets * 2;
-
-	HashTable* t2 = create_hash_table(log2(n2), table->mode);
+	HashTable* t2 = create_hash_table(log2(table->num_buckets)+1, table->mode);
 
 	for (INT_HASH b = 0; b < table->num_buckets; b++){ 
 		// similar to utilities code
@@ -531,7 +536,6 @@ HashTable *resize_table(HashTable *table){
 		while (bucket != NULL){
 			if (bucket->value != NULL) {
 				update_without_resize(bucket->value, t2);
-
 			}
 			bucket = bucket->next;
 		}
