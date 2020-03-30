@@ -7,9 +7,9 @@ long int numLines(char* fn) {
 
     long int linecount = 0;
 
-    char buffer[255];
+    char buffer[MAX_NAME_LEN*2 + BANK_ACC_LEN + PASSPORT_LEN + 9 + 10 + 1 + 5 + 1 + 1];
 
-    while(fgets(buffer, 255, f) != NULL) {
+    while(fgets(buffer, MAX_NAME_LEN*2 + BANK_ACC_LEN + PASSPORT_LEN + 9 + 10 + 1 + 5 + 1 + 1, f) != NULL) {
         linecount++;
     }
 

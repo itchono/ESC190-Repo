@@ -48,12 +48,45 @@ int test2(){
 	delete_table(table);
 	printf("========== End of Test ==========\n");
 	return pass;
-}	
+}
+
+int test3() {
+
+	PersonalData data1 = (PersonalData) {2, 'F', "Alice", "Li", "XXX", "YYY", 1986, 1, 1};
+	PersonalData data2 = (PersonalData) {7, 'M', "Bob", "Kim", "XXX", "YYY", 1999, 5, 12};
+	PersonalData data3 = (PersonalData) {10, 'F', "Eve", "Pooh", "XXX", "YYY", 1993, 4, 20};
+
+	HashTable* table = create_hash_table(1, CUCKOO);
+
+	print_status(table);
+	print_buckets(table);
+
+	update_key(&data1, &table);
+	print_status(table);
+	print_buckets(table);
+	update_key(&data2, &table);
+	print_status(table);
+	print_buckets(table);
+	update_key(&data3, &table);
+	print_status(table);
+	print_buckets(table);
+
+	delete_key(10, table);
+	print_status(table);
+	print_buckets(table);
+
+	delete_table(table);
+
+	return 0;
+
+
+}
 
 
 int main(){
 	printf("Test cases for part 3 of lab\n");
 	printf("PASSED: %d\n", test1());
 	printf("PASSED: %d\n", test2());
+	test3();
 	return 0;	
 }
