@@ -202,7 +202,6 @@ print_buckets(table);
 	table->num_keys = 0; // suppress resizing by update_key
 	update_key(&data_4, &table);
 	table->num_keys = 0; // suppress resizing by update_key
-	printf("OK!");
 
 	table->num_keys = 7; // assign the correct number of keys
 	
