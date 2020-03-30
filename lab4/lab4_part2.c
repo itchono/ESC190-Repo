@@ -369,7 +369,7 @@ void delete_table(HashTable *table){
 		}
 
 	}
-	else if (table->mode == 1 || table->mode == 2) {
+	else if (table->mode == 1 || table->mode == 2 || table->mode == 3) {
 		// DO NOT FREE THE VALUE POINTERS
 		// search through every bucket and PURGE
 
