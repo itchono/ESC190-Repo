@@ -4,6 +4,23 @@
 /** 
 open addressing hash table tests
 **/
+
+long int numLines3(char* fn) {
+    FILE* f = fopen(fn, "r");
+
+    long int linecount = 0;
+
+    char buffer[255];
+
+    while(fgets(buffer, 255, f) != NULL) {
+        linecount++;
+    }
+
+    fclose(f);
+    return linecount;
+}
+
+
 int test1(){
 	/** linear probing test
 	**/
@@ -82,11 +99,39 @@ int test3() {
 
 }
 
+void test4() {
+	printf("===== Test 4: simple parse data test =====\n");
+	PersonalData** data = parse_data("test_data_LOAD.txt");
+
+	long int numEntries = numLines3("test_data_LOAD.txt") - 1;
+
+	HashTable* table = create_hash_table(1, CUCKOO);
+
+	for (int i = 0; i < numEntries; i++) {
+		print_status(table);
+		print_buckets(table);
+		update_key(data[i],&table);
+	}
+
+	print_status(table);
+	print_buckets(table);
+
+	delete_table(table);
+
+
+	for (int i = 0; i < numEntries; i++) {
+		free(data[i]);
+	}
+
+	free(data);
+}
+
 
 int main(){
 	printf("Test cases for part 3 of lab\n");
 	printf("PASSED: %d\n", test1());
 	printf("PASSED: %d\n", test2());
 	test3();
+	test4();
 	return 0;	
 }

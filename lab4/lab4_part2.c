@@ -81,55 +81,48 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 		case 3:
 			// cuckoo insert
 			;
+
+			PersonalData* kPREV = NULL; // thing that was previously just inserted. None for now
+			PersonalData* kINS = data; // new key to insert
+
 			int stop = 0;
 
-			while (i<3 && !stop) {
-				k = (hash_funcs[i])(data->SIN, table->num_buckets);
-
-				if (!table->buckets[k]) stop = 1;
-				else i++;
-			}
-
-			if (i < 3 && stop) {
-				// if we're able to find a spot
-				table->buckets[k] = malloc(sizeof(Node));
-				table->buckets[k]->next = NULL;
-				table->buckets[k]->value = data; // new node
-				table->num_keys++;
-			}
-			else {
-				// else, take drastic measures
-
-				PersonalData* kstar = table->buckets[k]->value;
-
-				free(table->buckets[k]); // yeet current slot and fill it
-
-				table->buckets[k] = malloc(sizeof(Node)); // insert ogkey
-				table->buckets[k]->next = NULL;
-				table->buckets[k]->value = data; // new node
-				table->num_keys++;
-
-				i = 0;
-				stop = 0;
-
+			do {
 				while (i<3 && !stop) {
-					k = (hash_funcs[i])(kstar->SIN, table->num_buckets);
+					k = (hash_funcs[i])(kINS->SIN, table->num_buckets);
 
-					if (!table->buckets[k]) stop = 1;
+					if (!table->buckets[k]) stop = 1; // great we found a spot
 					else i++;
 				}
 
 				if (i < 3 && stop) {
-					// if we're able to find a spot
+					// if we're able to find a spot before step 5, great
 					table->buckets[k] = malloc(sizeof(Node));
 					table->buckets[k]->next = NULL;
-					table->buckets[k]->value = kstar; // new node
+					table->buckets[k]->value = kINS; // insert kSTAR
+					table->num_keys++;
 				}
-				else {
-					table->num_keys--;
+				else if (kPREV && table->buckets[k]->value == kPREV) {
+					// discard key if kPREV and kINS collide
+					stop = 1;
 				}
 
-			}
+				else {
+					// we must repeat the algorithm
+
+					PersonalData* temp = table->buckets[k] -> value; // is gonna get kicked out.
+					
+					kPREV = kINS; // key that was previously inserted
+
+					// insert k
+					table->buckets[k]->value = kINS; // new node
+					// don't increment key count yet, since we have just kicked one out.
+					
+					kINS = temp; // now we have to re-insert this
+				}
+			} while(!stop);
+
+
 			break;
 		}
 
