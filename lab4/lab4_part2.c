@@ -119,6 +119,7 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 					// don't increment key count yet, since we have just kicked one out.
 					
 					kINS = temp; // now we have to re-insert this
+					i = 0;
 				}
 			} while(!stop);
 
@@ -170,8 +171,8 @@ void update_without_resize(PersonalData * data, HashTable *table) {
 			// cuckoo
 			// linear probe; in same manner
 			;
-			while (table->buckets[i] && i < table->num_buckets) {
-				if (table->buckets[i]->value->SIN == data->SIN) {
+			while (i < table->num_buckets) {
+				if (table->buckets[i] && table->buckets[i]->value->SIN == data->SIN) {
 					table->buckets[i]->value = data;
 				}
 				i++;
@@ -253,6 +254,7 @@ int delete_key(INT_SIN SIN, HashTable *table){
 			if (table->buckets[(k+(int)pow(i,2))%table->num_buckets]->value->SIN == SIN) {
 				free(table->buckets[(k+(int)pow(i,2))%table->num_buckets]);
 				table->buckets[(k+(int)pow(i,2))%table->num_buckets] = NULL;
+				table->num_keys--;
 				return 1;
 			}
 			i++;
