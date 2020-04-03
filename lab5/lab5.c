@@ -20,9 +20,11 @@ Implement for 1% bonus!
 
 */
 
+// 1
 void encodeNuc(char *filename) {
+    // WORKS
 
-    char outName[256] = {'b', '\0'};
+    char outName[256] = {'b', '\0'}; // add to string
     
     strcat(outName, filename);
 
@@ -53,7 +55,9 @@ void encodeNuc(char *filename) {
     fclose(fin);
 }
 
+// 2
 void decodeBin(char *filename) {
+    // WORKS
 
     char outName[256] = {'n', '\0'};
     strcat(outName, filename);
@@ -76,6 +80,20 @@ void decodeBin(char *filename) {
     fclose(fout);
     fclose(fin);
 }
+
+// 3
+void findProtein(char *filename, int checkPos, int proteinInfo[]) {
+    // IPR
+
+    if (0){
+
+    }
+
+    else {
+        proteinInfo = {0, 0};
+    }
+}
+
 
 int main() {
 
