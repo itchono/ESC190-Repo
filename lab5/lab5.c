@@ -300,7 +300,89 @@ void isolateProtein(char *filename, int proteinInfo[]) {
 }
 
 int genMutant(char *filename, int mutation[]) {
+    char outName[256] = {'m', '\0'};
+    strcat(outName, filename);
+
+    FILE* fin = fopen(filename, "r");
+    FILE* fout = fopen(outName, "w");
+
+    char read[7]; // read buffer
     
+    int failure = 0;
+
+    int pos = 1;
+
+    while(fscanf(fin, "%2c", read) != EOF) {
+        // if expected nucleobase is not there, we have a failure condition
+        if (pos == mutation[0]) {
+            // time to apply the mutation
+
+            if (mutation[1] == 0) {
+                if ((mutation[2] == 0 && (read[0] != '0' || read[1] != '0')) ||
+                (mutation[2] == 1 && (read[0] != '0' || read[1] != '1')) ||
+                (mutation[2] == 2 && (read[0] != '1' || read[1] != '0')) ||
+                (mutation[2] == 3 && (read[0] != '1' || read[1] != '1'))) {
+                    failure = 1;
+                    break;
+                }
+                else {
+                    fscanf(fin, "%2c", read); // push next position
+                }
+            }
+            else if (mutation[1] == 2) {
+                fscanf(fin, "%2c", read); // push next position
+            }
+
+            if (mutation[1] == 1 || mutation[1] == 2) {
+                // insert
+                switch (mutation[2])
+                {
+                case 0:
+                    fprintf(fout, "00");
+                    break;
+                
+                case 1:
+                    fprintf(fout, "01");
+                    break;
+
+                case 2:
+                    fprintf(fout, "10");
+                    break;
+                case 3:
+                    fprintf(fout, "11");
+                    break;
+                }
+            }
+        }
+
+        fprintf(fout, "%c%c", read[0], read[1]);
+
+        pos++;
+    }
+
+
+    fclose(fin);
+    fclose(fout);
+
+
+    if (failure) {
+        fin = fopen(filename, "r");
+        fout = fopen(outName, "w");
+
+        char read2;
+        while(fscanf(fin, "%c", &read2) != EOF) {
+            fprintf(fout, "%c", read2);
+        }
+
+        fclose(fin);
+        fclose(fout);
+    }
+
+    return failure;
+}
+
+int checkMutant(char *oriFilename, char *mutFilename) {
+        return 0;
 }
 
 
