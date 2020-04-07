@@ -99,6 +99,7 @@ void decodeBin(char *filename) {
 // 3
 void findProtein(char *filename, int checkPos, int proteinInfo[]) {
     // READY TO TEST
+    // At least partial working
 
     FILE* fin = fopen(filename, "r");
     FILE* codonF = fopen("codons.txt", "r");
@@ -112,40 +113,45 @@ void findProtein(char *filename, int checkPos, int proteinInfo[]) {
 
     do {
         x++;
-        seqs[x] = calloc(7, sizeof(char)); // 6 bins + thingy
+        seqs[x] = calloc(7, sizeof(char)); // 6 bins + terminator
+        seqs[x][6] = '\0'; // string array
 
-    } while(fscanf(fin, "%6c,%c", seqs[x], &proteins[x]) != EOF);
+    } while(fscanf(codonF, "%6c,%c\n", seqs[x], &(proteins[x])) != EOF);
     // arrays ready to use
-
 
     char read[7]; // read buffer
 
-    for (int i = 0; i < (checkPos-1); i++) {
-        fscanf(fin, "%2c", read);
-    }
-    // skip this many positions
+    for (int i = 0; i < (checkPos-1) && fscanf(fin, "%2c", read) != EOF; i++);
+    // skip this many positions OK
 
-    // ** ASSUMING NUCLEOPOSITIONS START AT 1 TODO
+    // ** ASSUMING NUCLEOPOSITIONS START AT 1 I think OK
 
     int nucleoStart = 1 + (checkPos-1);
     int aminoLength = 0;
+    int start = 0;
+    int end = 0;
 
-    while(fscanf(fin, "%6c", read) != EOF) {
+    while(fscanf(fin, "%6c", read) != EOF && !end) {
+        read[6] = '\0';
 
         for (int i = 0; i < n; i++) {
+
             if (!strcmp(read, seqs[i]) && proteins[i] == 'M') {
                 proteinInfo[0] = nucleoStart;
+                start = 1;
                 aminoLength++;
             }
-            else if(!strcmp(read, seqs[i])){
+            else if(!strcmp(read, seqs[i]) && proteins[i] == '*' && start && !end){
                 aminoLength++;
-                continue;
-            }
-            else if(!strcmp(read, seqs[i]) && proteins[i] == '*'){
-                aminoLength++;
+                end = 1;
                 proteinInfo[1] = aminoLength;
                 break;
             }
+            else if(!strcmp(read, seqs[i]) && start){
+                aminoLength++;
+                continue;
+            }
+            
         }
         nucleoStart += 3; // keep moving
     }
@@ -154,23 +160,158 @@ void findProtein(char *filename, int checkPos, int proteinInfo[]) {
         free(seqs[i]);
     }
 
-    if (!aminoLength) proteinInfo = {0, 0}; // fallback
-
-    for (int i = 0; i < n; i++) {
-        free(seqs[i]);
+    if (!aminoLength || !end) {
+        // also, catch loose ends
+        proteinInfo[0] = 0; // fallback
+        proteinInfo[1] = 0;
     }
+
     free(proteins);
-    free(seqs)
+    free(seqs);
 
     fclose(fin);
     fclose(codonF);
 }
 
+void proteinReport(char* filename) {
+    char outName[256] = {'r', '\0'};
+    strcat(outName, filename);
+
+    FILE* fin = fopen(filename, "r");
+    FILE* fout = fopen(outName, "w");
+
+    // determine active reading frame
+    int s1[2], s2[2], s3[2];
+    int p1 = 1, p2 = 2, p3 = 3;
+
+    findProtein(filename, p1, s1);
+    findProtein(filename, p2, s2);
+    findProtein(filename, p3, s3);
+
+    if (s1[0] == 0 && s2[0] == 0 && s3[0] == 0) {
+        fprintf(fout, "0, 0\n");
+    }
+    else {
+        while(!(s1[0] == 0 && s2[0] == 0 && s3[0] == 0)) {
+
+            if (s1[0] && (s1[0] <= s2[0] || !s2[0]) && (s1[0] <= s3[0] || !s3[0])) {
+                // push s1 next
+                fprintf("%d,%d\n", s1[0], s1[1]);
+
+                int i = 0;
+                do {
+                    findProtein(filename, s1[0] + 3*s1[1] + i, s1);
+                    i++;
+                }   while(!s1[0]);
+
+            }
+            else if (s2[0] && (s2[0] <= s1[0] || !s1[0]) && (s2[0] <= s3[0] || !s3[0])) {
+                // push s2 next
+
+                fprintf("%d,%d\n", s2[0], s2[1]);
+
+                int i = 0;
+                do {
+                    findProtein(filename, s2[0] + 3*s2[1] + i, s2);
+                    i++;
+                }   while(!s2[0]);
+            }
+            else if (s3[0] && (s3[0] <= s1[0] || !s1[0]) && (s3[0] <= s2[0] || !s2[0])) {
+                // push s3 next
+
+                fprintf("%d,%d\n", s2[0], s2[1]);
+
+                int i = 0;
+                do {
+                    findProtein(filename, s3[0] + 3*s3[1] + i, s3);
+                    i++;
+                }   while(!s3[0]);
+            }
+        }
+    }
+    fclose(fin);
+    fclose(fout);
+}
+
+void isolateProtein(char *filename, int proteinInfo[]) {
+    char outName[256] = {'p', '\0'};
+    strcat(outName, filename);
+    FILE* fout = fopen(outName, "w");
+
+    if (proteinInfo[0] == 0 && proteinInfo[1] == 0) {
+        ; // nothing
+    }
+    else {
+        // READY TO TEST
+        // At least partial working
+
+        FILE* fin = fopen(filename, "r");
+        FILE* codonF = fopen("codons.txt", "r");
+
+        int n = numLines("codons.txt");
+
+        char** seqs = calloc(n, sizeof(char*));
+        char* proteins = calloc(n, sizeof(char));
+
+        int x = -1;
+
+        do {
+            x++;
+            seqs[x] = calloc(7, sizeof(char)); // 6 bins + terminator
+            seqs[x][6] = '\0'; // string array
+
+        } while(fscanf(codonF, "%6c,%c\n", seqs[x], &(proteins[x])) != EOF);
+        // arrays ready to use
+
+        char read[7]; // read buffer
+
+        for (int i = 0; i < (proteinInfo[0]-1) && fscanf(fin, "%2c", read) != EOF; i++);
+        // skip this many positions OK
+
+        // ** ASSUMING NUCLEOPOSITIONS START AT 1 I think OK
+
+        int write = 0;
+
+        while(fscanf(fin, "%6c", read) != EOF && write < proteinInfo[1]) {
+            read[6] = '\0';
+
+            for (int i = 0; i < n; i++) {
+
+               if(!strcmp(read, seqs[i])){
+                    fprintf(fout, "%c", proteins[i]);
+                    write++;
+                    continue;
+                }
+                
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            free(seqs[i]);
+        }
+
+        free(proteins);
+        free(seqs);
+
+        fclose(fin);
+        fclose(codonF);
+    }
+    fclose(fout);
+}
+
+int genMutant(char *filename, int mutation[]) {
+    
+}
+
+
 
 int main() {
-
-    encodeNuc("partialSLV.txt");
+    encodeNuc("partialSLV2.txt");
     decodeBin("bpartialSLV.txt");
+    int arr[2] = {-1, -1};
+    findProtein("bpartialSLV2.txt", 1, arr);
+
+    printf("%d, %d", arr[0], arr[1]);
 
     return 0;
 }
