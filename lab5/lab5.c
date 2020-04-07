@@ -100,6 +100,9 @@ void decodeBin(char *filename) {
 void findProtein(char *filename, int checkPos, int proteinInfo[]) {
     // READY TO TEST
     // At least partial working
+    // TBD FIX FOR EX. 120
+    // WILL ALSO NEED TO MODIFY 5
+
 
     FILE* fin = fopen(filename, "r");
     FILE* codonF = fopen("codons.txt", "r");
@@ -132,6 +135,8 @@ void findProtein(char *filename, int checkPos, int proteinInfo[]) {
     int end = 0;
 
     while(fscanf(fin, "%6c", read) != EOF && !end) {
+        printf("START:%d\n", nucleoStart);
+
         read[6] = '\0';
 
         for (int i = 0; i < n; i++) {
@@ -384,4 +389,20 @@ int checkMutant(char *oriFilename, char *mutFilename) {
     // IMPLEMENT
     return 0;
 }
+
+
+
+int main() {
+    encodeNuc("fullSLV.txt");
+    decodeBin("bpartialSLV.txt");
+    int arr[2] = {-1, -1};
+    findProtein("bfullSLV.txt", 66, arr);
+
+    printf("%d, %d\n", arr[0], arr[1]);
+
+    proteinReport("bpartialSLV.txt");
+
+    return 0;
+}
+
 
