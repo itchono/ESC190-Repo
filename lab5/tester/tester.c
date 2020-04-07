@@ -109,6 +109,7 @@ void findProtein(char *filename, int checkPos, int proteinInfo[]) {
     // ** ASSUMING NUCLEOPOSITIONS START AT 1 I think OK
 
     int nucleoStart = 1 + (checkPos-1);
+	printf("START:%d\n", nucleoStart);
     int aminoLength = 0;
     int start = 0;
     int end = 0;
@@ -174,6 +175,10 @@ void proteinReport(char* filename) {
 
     int s[2];
 
+	printf("1: %d, %d\n", s1[0], s1[1]);
+	printf("2: %d, %d\n", s2[0], s2[1]);
+	printf("3: %d, %d\n", s3[0], s3[1]);
+
     if (s1[0] && (s1[0] <= s2[0] || !s2[0]) && (s1[0] <= s3[0] || !s3[0])) {s[0] = s1[0]; s[1] = s1[1];}
     else if(s2[0] && (s2[0] <= s1[0] || !s1[0]) && (s2[0] <= s3[0] || !s3[0])) {s[0] = s2[0]; s[1] = s2[1];}
     else if (s3[0] && (s3[0] <= s1[0] || !s1[0]) && (s3[0] <= s2[0] || !s2[0])) {s[0] = s3[0]; s[1] = s3[1];}
@@ -197,6 +202,10 @@ void proteinReport(char* filename) {
             findProtein(filename, p1, s1);
             findProtein(filename, p2, s2);
             findProtein(filename, p3, s3);
+
+			printf("1: %d, %d\n", s1[0], s1[1]);
+            printf("2: %d, %d\n", s2[0], s2[1]);
+            printf("3: %d, %d\n", s3[0], s3[1]);
 
             // Take the minmum of all three
             if (s1[0] && (s1[0] <= s2[0] || !s2[0]) && (s1[0] <= s3[0] || !s3[0])) {s[0] = s1[0]; s[1] = s1[1];}

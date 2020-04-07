@@ -206,13 +206,11 @@ void proteinReport(char* filename) {
     else {
         while(s[0]) {
 
-            printf("%d, %d\n", s[0], s[1]);
-
             fprintf(fout, "%d,%d\n", s[0], s[1]);
 
-            p1 = s[0] + 3*s[1];
-            p2 = s[0] + 3*s[1] + 1;
-            p3 = s[0] + 3*s[1] + 2;
+            p1 = s[0] + 3*s[1] + 1;
+            p2 = s[0] + 3*s[1] + 2;
+            p3 = s[0] + 3*s[1] + 3;
 
             findProtein(filename, p1, s1);
             findProtein(filename, p2, s2);
@@ -386,20 +384,4 @@ int checkMutant(char *oriFilename, char *mutFilename) {
     // IMPLEMENT
     return 0;
 }
-
-
-
-int main() {
-    encodeNuc("partialSLV2.txt");
-    decodeBin("bpartialSLV.txt");
-    int arr[2] = {-1, -1};
-    findProtein("bfullSLV.txt", 4255, arr);
-
-    printf("%d, %d\n", arr[0], arr[1]);
-
-    proteinReport("bpartialSLV.txt");
-
-    return 0;
-}
-
 
