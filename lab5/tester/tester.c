@@ -1,24 +1,6 @@
-//include things here
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
-
-
-/*
-
-Fill in the following functions - follow the document for proper declaration and definition
-1. encodeNuc
-2. decodeBin
-3. findProtein
-4. proteinReport
-5. isolateProtein
-6. genMutant
-
-Implement for 1% bonus!
-7. checkMutant
-
-*/
 
 int numLines(char* fn) {
     FILE* f = fopen(fn, "r");
@@ -173,9 +155,7 @@ void findProtein(char *filename, int checkPos, int proteinInfo[]) {
     fclose(codonF);
 }
 
-// 4
 void proteinReport(char* filename) {
-    // FIX
     char outName[256] = {'r', '\0'};
     strcat(outName, filename);
 
@@ -183,7 +163,7 @@ void proteinReport(char* filename) {
     FILE* fout = fopen(outName, "w");
 
     // determine active reading frame
-    int s1[2], s2[2], s3[2];
+   	int s1[2], s2[2], s3[2];
     int p1 = 1, p2 = 2, p3 = 3;
 
     findProtein(filename, p1, s1);
@@ -229,9 +209,7 @@ void proteinReport(char* filename) {
     fclose(fout);
 }
 
-// 5
 void isolateProtein(char *filename, int proteinInfo[]) {
-    // WORKS
     char outName[256] = {'p', '\0'};
     strcat(outName, filename);
     FILE* fout = fopen(outName, "w");
@@ -297,9 +275,7 @@ void isolateProtein(char *filename, int proteinInfo[]) {
     fclose(fout);
 }
 
-// 6
 int genMutant(char *filename, int mutation[]) {
-    // WORKS
     char outName[256] = {'m', '\0'};
     strcat(outName, filename);
 
@@ -381,25 +357,315 @@ int genMutant(char *filename, int mutation[]) {
     return failure;
 }
 
-// 7 BONUS
 int checkMutant(char *oriFilename, char *mutFilename) {
-    // IMPLEMENT
-    return 0;
+        return 0;
 }
 
+int main(void) {
+	int allPass = 1;
 
 
-int main() {
-    encodeNuc("partialSLV2.txt");
-    decodeBin("bpartialSLV.txt");
-    int arr[2] = {-1, -1};
-    findProtein("bfullSLV.txt", 4255, arr);
+	printf("====Begin Test 1: encodeNuc and decodeBin====\n");
+	printf("Files testa.txt and btestb.txt required\n");
+	printf("Disclaimer: does not test for accidentally writing extra characters\n");
+	encodeNuc("testa.txt");
+        decodeBin("btestb.txt");
+	FILE* binCompare = fopen("btesta.txt", "r");
+	FILE* binOrig = fopen("btestb.txt", "r");
+	FILE* nucCompare = fopen("nbtestb.txt", "r");
+	FILE* nucOrig = fopen("testa.txt", "r");
+	printf("Testing encodeNuc\n");
+	if (binCompare == NULL) {
+		allPass = 0;
+		printf("Error: btesta.txt not created properly\n");
+	}
+	else {
+		char strBinC[109];
+		char strBinO[109];
+		fgets(strBinC, 109, binCompare);
+		fgets(strBinO, 109, binOrig);
+		if (strcmp(strBinC, strBinO) != 0) {
+			allPass = 0;
+			printf("Error: Strings do not match\n");
+			printf("Correct string:\t%s\n", strBinO);
+			printf("Your string:\t%s\n", strBinC);
+			printf("Strcmp returned:\t%d\n", strcmp(strBinC, strBinO));
+		}
+		else {
+			printf("encodeNuc test passed!\n");
+		}
+	}
 
-    printf("%d, %d\n", arr[0], arr[1]);
+	printf("Testing decodeBin\n");
+	if (nucCompare == NULL) {
+		allPass = 0;
+		printf("Error: nbtestb.txt not created properly\n");
+	}
+	else {
+		char strNucC[55];
+		char strNucO[55];
+		fgets(strNucC, 55, nucCompare);
+		fgets(strNucO, 55, nucOrig);
+		if (strcmp(strNucC, strNucO) != 0) {
+			allPass = 0;
+			printf("Error: Strings do not match\n");
+			printf("Correct string:\t%s\n", strNucO);
+			printf("Your string:\t%s\n", strNucC);
+			printf("Strcmp returned:\t%d\n", strcmp(strNucC, strNucO));
+		}
+		else {
+			printf("decodeBin test passed!\n");
+		}
+	}
+	fclose(binCompare);
+	fclose(binOrig);
+	fclose(nucCompare);
+	fclose(nucOrig);
 
-    proteinReport("bpartialSLV.txt");
 
-    return 0;
+	printf("====Begin Test 2: findProtein====\n");
+
+	printf("Test 1: testa.txt\n");
+	int test2arr[2];
+	int test2start = 1;
+	int test2length = 1;
+        findProtein("btesta.txt", 1, test2arr);
+	if (test2arr[0] != 13) {
+		test2start = 0;
+		allPass = 0;
+		printf("Start codon incorrect\n");
+		printf("Correct start codon:\t13\n");
+		printf("Your start codon:\t%d\n", test2arr[0]);
+	}
+	if (test2arr[1] != 10) {
+		test2length = 0;
+		allPass = 0;
+		printf("Length of protein incorrect\n");
+		printf("Correct protein length:\t10\n");
+		printf("Your protein length:\t%d\n", test2arr[1]);
+	}
+	if (test2start && test2length) {
+		printf("findProtein test 1 passed!\n");
+	}
+
+	printf("Test 2: partialSLV.txt\n");
+	encodeNuc("partialSLV.txt");
+	test2start = 1;
+	test2length = 1;
+	findProtein("bpartialSLV.txt", 30, test2arr);
+	if (test2arr[0] != 33) {
+		allPass = 0;
+		test2start = 0;
+		printf("Start codon incorrect\n");
+		printf("Correct start codon:\t33\n");
+		printf("Your start codon:\t%d\n", test2arr[0]);
+	}
+	if (test2arr[1] != 10) {
+		test2length = 0;
+		allPass = 0;
+		printf("Length of protein incorrect\n");
+		printf("Correct protein length:\t10\n");
+		printf("Your protein length:\t%d\n", test2arr[1]);
+	}
+	if (test2start && test2length) {
+		printf("findProtein test 2 passed!\n");
+	}
+
+	printf("Test 3: Null case test\n");
+	test2start = 1;
+	test2length = 1;
+        findProtein("btesta.txt", 2, test2arr);
+	if (test2arr[0] != 0) {
+		test2start = 0;
+		allPass = 0;
+		printf("Start codon incorrect\n");
+		printf("Correct start codon:\t0\n");
+		printf("Your start codon:\t%d\n", test2arr[0]);
+	}
+	if (test2arr[1] != 0) {
+		test2length = 0;
+		allPass = 0;
+		printf("Length of protein incorrect\n");
+		printf("Correct protein length:\t0\n");
+		printf("Your protein length:\t%d\n", test2arr[1]);
+	}
+	if (test2start && test2length) {
+		printf("findProtein test 3 passed!\n");
+	}
+
+
+	printf("====Begin Test 3: proteinReport====\n");
+
+	printf("Test 1: partialSLV.txt\n");
+	proteinReport("bpartialSLV.txt");
+	FILE* test3file = fopen("rbpartialSLV.txt", "r");
+	if (test3file == NULL) {
+		allPass = 0;
+		printf("Error: rbpartialSLV.txt not created properly\n");
+	}
+	else {
+		char test3_1str[6];
+		fgets(test3_1str, 6, test3file);
+		if (strcmp(test3_1str, "33,10") != 0) {
+			allPass = 0;
+			printf("Error: File information incorrect\n");
+			printf("Your file has:\t%s\n", test3_1str);
+			printf("Correct file info:\t33,10\n");
+		}
+		else {
+			printf("proteinReport test 1 passed!\n");
+		}
+	}
+	fclose(test3file);
+
+	printf("Test 2: fullSLV.txt\n");
+	encodeNuc("fullSLV.txt");
+	proteinReport("bfullSLV.txt");
+	FILE* test3file2 = fopen("rbfullSLV.txt", "r");
+	if (test3file2 == NULL) {
+		allPass = 0;
+		printf("Error: rbfullSLV.txt not created properly\n");
+	}
+	else {
+		char test3str[10];
+		int counter3 = 0;
+		while (fgets(test3str, 10, test3file2) != NULL) {
+			counter3++;
+		}
+		if (counter3 < 9) {
+			allPass = 0;
+			printf("Not all proteins found\n");
+			printf("Total number of proteins:\t9\n");
+			printf("Proteins you've found:\t%d\n", counter3);
+		}
+		else if (counter3 > 9) {
+			allPass = 0;
+			printf("Counted extra proteins\n");
+			printf("Total number of proteins:\t9\n");
+			printf("Proteins you've found:\t%d\n", counter3);
+
+		}
+		else {
+			printf("You've found the right number of proteins!\n");
+			printf("Compare your rbfullSLV.txt with fullreport.txt (manually parsed and validated by program)\n");
+		}
+	}
+	fclose(test3file2);
+
+
+	printf("====Begin Test 4: isolateProtein====\n");
+
+	printf("Test 1: partialSLV.txt\n");
+	int test4info1[2] = {33, 10};
+	isolateProtein("bpartialSLV.txt", test4info1);
+	FILE* test4file1 = fopen("pbpartialSLV.txt", "r");
+	if (test4file1 == NULL) {
+		allPass = 0;
+		printf("Error: pbpartialSLV.txt not created properly\n");
+	}
+	else {
+		char test4protein[11];
+		fgets(test4protein, 11, test4file1);
+		if (strcmp(test4protein, "MLSALTQYN*") != 0) {
+			allPass = 0;
+			printf("Protein Incorrect\n");
+			printf("Correct Protein:\tMLSALTQYN*\n");
+			printf("Your Protein:\t%s\n", test4protein);
+		}
+		else {
+			printf("isolateProtein test 1 passed!\n");
+		}
+	}
+	fclose(test4file1);
+	
+	printf("Test 2: fullSLV.txt\n");
+	int test4_2pass = 1;
+	int test4info2[2] = {4163, 39};
+	isolateProtein("bfullSLV.txt", test4info2);
+	FILE* test4file2 = fopen("pbfullSLV.txt", "r");
+	if (test4file2 == NULL) {
+		allPass = 0;
+		test4_2pass = 0;
+		printf("Error: pbfullSLV.txt not created properly\n");
+	}
+	else {
+		char test4protein2[40];
+		fgets(test4protein2, 40, test4file2);
+		if (strcmp(test4protein2, "MGYINVFAFPFTIYSLLLCRMNSRNYIAQVDVVNFNLT*") != 0) {
+			allPass = 0;
+			test4_2pass = 0;
+			printf("Protein Incorrect\n");
+			printf("Correct Protein:\tMGYINVFAFPFTIYSLLLCRMNSRNYIAQVDVVNFNLT*\n");
+			printf("Your Protein:\t%s\n", test4protein2);
+		}
+		else {
+			printf("isolateProtein test 2 part 1 passed!\n");
+		}
+	}
+	fclose(test4file2);
+	int test4info3[2] = {445, 3};
+	isolateProtein("bfullSLV.txt", test4info3);
+	FILE* test4file3 = fopen("pbfullSLV.txt", "r");
+	if (test4file3 == NULL) {
+		allPass = 0;
+		test4_2pass = 0;
+		printf("Error: pbfullSLV.txt not created properly\n");
+	}
+	else {
+		char test4protein3[4];
+		fgets(test4protein3, 4, test4file3);
+		if (strcmp(test4protein3, "ML*") != 0) {
+			allPass = 0;
+			test4_2pass = 0;
+			printf("Protein Incorrect\n");
+			printf("Correct Protein:\tML*\n");
+			printf("Your Protein:\t%s\n", test4protein3);
+		}
+		else {
+			printf("isolateProtein test 2 part 2 passed!\n");
+		}
+	}
+	fclose(test4file3);
+	if (test4_2pass) {
+		printf("isolateProtein test 2 passed!\n");
+	}
+
+
+	printf("====Begin Test 5: genMutant====\n");
+
+	int mut1[3] = {37, 2, 2};
+	int mut2[3] = {41, 0, 3};
+	int mut3[3] = {46, 1, 0};
+	int mut4[3] = {54, 2, 1};
+	int mut5[3] = {59, 2, 0};
+	genMutant("bpartialSLV.txt", mut1);
+	genMutant("mbpartialSLV.txt", mut2);
+	genMutant("mmbpartialSLV.txt", mut3);
+	genMutant("mmmbpartialSLV.txt", mut4);
+	genMutant("mmmmbpartialSLV.txt", mut5);
+	FILE* mutstream = fopen("mmmmmbpartialSLV.txt", "r");
+	FILE* test5stream = fopen("mbpartialSLV_PROVIDED.txt", "r");
+	char mutcodons[153];
+	char testcodons[153];
+	fgets(mutcodons, 153, mutstream);
+	fgets(testcodons, 153, test5stream);
+	if (strcmp(mutcodons, testcodons) != 0) {
+		allPass = 0;
+		printf("Mutation error\n");
+		printf("Correct mutation:\t%s\n", testcodons);
+		printf("Your mutation:\t\t%s\n", mutcodons);
+	}
+	else {
+		printf("genMutant test passed!\n");
+	}
+	fclose(mutstream);
+	fclose(test5stream);
+	if (allPass) {
+		printf("Congrats! All tests passed!\n");
+		printf("Don't forget to validate your rbfullSLV.txt!\n");
+	}
+	else {
+		printf("One or more errors in lab\n");
+	}
+	return 0;
 }
-
-
