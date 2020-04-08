@@ -506,32 +506,6 @@ int checkMutant(char *oriFilename, char *mutFilename) {
             // no change to Boffset;
         }
 
-        // case 1: deletion, given A is correct
-        // DELETE at positions 4, 7
-        // ex. ATGABCDEFG vs
-        //     0123456789
-        //     ATGA CD FG
-        //     0123 45 67
-        // same values at A[3], and A[5] = B[4] for N = 4
-        // we then give B an offset
-        // if Boffset = 1, then it realigns with A
-        // A[6] = B[6-Boffset] and A[7+1] = B[7-Boffset] for N = 7
-        else if (pA[i-1] == pB[i-1-Boffset] && pA[i+1] == pB[i-Boffset] && pA[i] != pB[i-Boffset]) {
-            printf("d\n");
-            // deletion
-            int c = -1;
-
-            if(pA[i] == 'A') c = 0;
-            else if(pA[i] == 'C') c = 1;
-            else if(pA[i] == 'G') c = 2;
-            else if(pA[i] == 'T') c = 3;
-
-            fprintf(fout, "%d,0,%d\n", pos, c);
-            numChanges++;
-
-            Boffset++;
-        }
-
         // case 2: insertion
         // might not work
 
@@ -571,6 +545,34 @@ int checkMutant(char *oriFilename, char *mutFilename) {
 
             Boffset--;
         }
+
+        // case 1: deletion, given A is correct
+        // DELETE at positions 4, 7
+        // ex. ATGABCDEFG vs
+        //     0123456789
+        //     ATGA CD FG
+        //     0123 45 67
+        // same values at A[3], and A[5] = B[4] for N = 4
+        // we then give B an offset
+        // if Boffset = 1, then it realigns with A
+        // A[6] = B[6-Boffset] and A[7+1] = B[7-Boffset] for N = 7
+        else if (pA[i-1] == pB[i-1-Boffset] && pA[i+1] == pB[i-Boffset] && pA[i] != pB[i-Boffset]) {
+            printf("d\n");
+            // deletion
+            int c = -1;
+
+            if(pA[i] == 'A') c = 0;
+            else if(pA[i] == 'C') c = 1;
+            else if(pA[i] == 'G') c = 2;
+            else if(pA[i] == 'T') c = 3;
+
+            fprintf(fout, "%d,0,%d\n", pos, c);
+            numChanges++;
+
+            Boffset++;
+        }
+
+
         pos++;
     }
     fclose(fA);
@@ -580,4 +582,8 @@ int checkMutant(char *oriFilename, char *mutFilename) {
     fclose(fout);
     
     return numChanges;
+}
+
+int main() {
+    checkMutant("bpartialSLV.txt", "mbpartialSLV.txt");
 }
