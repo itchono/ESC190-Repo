@@ -464,8 +464,6 @@ int checkMutant(char *oriFilename, char *mutFilename) {
     fgets(pA, 32768, fA);
     fgets(pB, 32768, fB); // read proteins
 
-    printf("%s vs\n%s\n", pA, pB); // debug
-
     // advance both strings and examine differences
 
     int pos = 2; // start at second step of protein, after the start codon
@@ -473,6 +471,8 @@ int checkMutant(char *oriFilename, char *mutFilename) {
 
     while(pA[pos-1] != '\0') {
         int i = pos-1;
+
+        // check 3, then 2, then 1 OK 
 
         // case 3: substitution
         // same example, but now let's sub at N = 5
@@ -489,8 +489,6 @@ int checkMutant(char *oriFilename, char *mutFilename) {
         // A[5-1] = B[5-1-(-1)] and A[5+1] = B[5+1-(-1)]
 
         if (pA[i-1] == pB[i-1-Boffset] && pA[i+1] == pB[i+1-Boffset] && pA[i] != pB[i-Boffset]) {
-            printf("s\n");
-
             int c = -1;
 
             // this time, get the newly inserted one
@@ -527,8 +525,6 @@ int checkMutant(char *oriFilename, char *mutFilename) {
 
         else if(pA[i-1] == pB[i-1-Boffset] && pA[i] == pB[i+1-Boffset] && pA[i] != pB[i-Boffset]) {
 
-            printf("i\n");
-
             int c = -1;
 
             // this time, get the newly inserted one
@@ -557,7 +553,6 @@ int checkMutant(char *oriFilename, char *mutFilename) {
         // if Boffset = 1, then it realigns with A
         // A[6] = B[6-Boffset] and A[7+1] = B[7-Boffset] for N = 7
         else if (pA[i-1] == pB[i-1-Boffset] && pA[i+1] == pB[i-Boffset] && pA[i] != pB[i-Boffset]) {
-            printf("d\n");
             // deletion
             int c = -1;
 
@@ -582,8 +577,4 @@ int checkMutant(char *oriFilename, char *mutFilename) {
     fclose(fout);
     
     return numChanges;
-}
-
-int main() {
-    checkMutant("bpartialSLV.txt", "mbpartialSLV.txt");
 }
