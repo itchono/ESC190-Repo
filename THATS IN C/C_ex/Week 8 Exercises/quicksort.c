@@ -31,6 +31,7 @@ void quickSorter(int* arr, int low, int high) {
     
     int currentDir = LEFT; // dir of motion
     int pivot = arr[low]; // temp var to store pivot
+    // CHOOSE pivot to be the leftmost element (this is what affects performance!)
     
     while (left < right) {
       // We now start the main process
