@@ -1,0 +1,28 @@
+PWD c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final
+INPUT C:\Users\mdsup\AppData\Local\MiKTeX\2.9\miktex\data\le\pdftex\pdflatex.fmt
+INPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.tex
+OUTPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.log
+INPUT C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls
+INPUT C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls
+INPUT C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo
+INPUT C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo
+INPUT C:\Program Files\MiKTeX 2.9\tex\latex\l3backend\l3backend-pdfmode.def
+INPUT C:\Program Files\MiKTeX 2.9\tex\latex\l3backend\l3backend-pdfmode.def
+INPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.aux
+INPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.aux
+OUTPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.aux
+OUTPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.pdf
+INPUT C:\Users\mdsup\AppData\Local\MiKTeX\2.9\pdftex\config\pdftex.map
+INPUT c:\Users\mdsup\Documents\GitHub\ESC190-Repo\ESC190 Final\Q1.aux
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmex10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmex10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmmi10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmmi10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmmi5.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmmi5.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmmi7.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmmi7.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmr10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmr10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmsy10.pfb
+INPUT C:\Program Files\MiKTeX 2.9\fonts\type1\public\amsfonts\cm\cmsy10.pfb
